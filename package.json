@@ -21,6 +21,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
     "react-native-awesome-text-input": "^1.1.2",
     "react-native-gesture-handler": "~1.6.0",
+    "react-native-numeric-input": "^1.8.3",
     "react-native-password-field": "^1.0.8",
     "react-native-pure-chart": "^0.0.24",
     "react-native-reanimated": "~1.9.0",
