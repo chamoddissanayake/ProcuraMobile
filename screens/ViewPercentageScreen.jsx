@@ -1,0 +1,210 @@
+import React, { Component } from "react";
+import { Text, StyleSheet, View, Image } from "react-native";
+import Screen from "../components/Screen";
+import PureChart from "react-native-pure-chart";
+import AppText from "../common/AppText";
+import AppButton from "../common/AppButton";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import colors from "../config/colors";
+
+export default class ViewPercentageScreen extends Component {
+  constructor(props) {
+    super();
+    this.state = {
+      itemId: "",
+      itemName: "Cement",
+      photoPath:
+        "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2Ftemp%2Fcementhd.png?alt=media&token=e354541a-29f3-43fb-b27e-9c19f16963ee",
+
+      capacity: 200,
+      //   used: 0,
+      //   remaining: 50,
+
+      dataSet: [
+        { value: 90, label: "Used", color: "red" },
+        { value: 10, label: "Remaining", color: "blue" },
+        // 0 value - used
+        // 1 value - remaining
+      ],
+    };
+  }
+
+  componentDidMount() {
+    var temp = this.state.capacity - this.state.remaining;
+    // this.setState({ : temp });
+  }
+
+  onPressPlaceNewOrder = () => {
+    this.props.navigation.navigate("PlaceOrderScreen");
+  };
+
+  render() {
+    return (
+      <Screen navigation={this.props.navigation}>
+        <ScrollView>
+          <View>
+            {/* https://developer.aliyun.com/mirror/npm/package/react-native-pure-chart */}
+
+            <View style={styles.ItemNameArea}>
+              <AppText style={styles.ItemNameText}>
+                {this.state.itemName}
+              </AppText>
+            </View>
+
+            <View style={styles.imageContainerView}>
+              <Image
+                style={styles.imageStyle}
+                source={
+                  this.state.photoPath ? { uri: this.state.photoPath } : null
+                }
+              />
+            </View>
+            <View style={styles.piechartArea}>
+              <PureChart data={this.state.dataSet} type="pie" />
+            </View>
+
+            {/* Start Summary */}
+            <View style={styles.usedRemainingSummary}>
+              <View style={styles.usedRemainingSummaryRow}>
+                <View style={styles.summaryLeftSide}>
+                  <AppText style={styles.titleText}>Capacity</AppText>
+                </View>
+                <View style={styles.summaryRightSide}>
+                  <AppText style={styles.valueText}>
+                    {this.state.capacity}
+                  </AppText>
+                </View>
+              </View>
+              <View style={styles.usedRemainingSummaryRow}>
+                <View style={styles.summaryLeftSide}>
+                  <AppText style={styles.titleText}>Used</AppText>
+                </View>
+                <View style={styles.summaryRightSide}>
+                  <AppText style={styles.valueText}>
+                    {this.state.dataSet[0].value}
+                  </AppText>
+                </View>
+              </View>
+              <View style={styles.usedRemainingSummaryRow}>
+                <View style={styles.summaryLeftSide}>
+                  <AppText style={styles.titleText}>Remaining</AppText>
+                </View>
+                <View style={styles.summaryRightSide}>
+                  <AppText style={styles.valueText}>
+                    {this.state.dataSet[1].value}
+                  </AppText>
+                </View>
+              </View>
+            </View>
+            {/* End of summary */}
+
+            <View style={styles.centerBtns}>
+              <TouchableOpacity
+                //   onPress={onPress}
+                style={styles.appButtonContainer}
+              >
+                <Text style={styles.appButtonText}>View Previous Orders</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.centerBtns}>
+              <TouchableOpacity
+                onPress={this.onPressPlaceNewOrder}
+                style={styles.appButtonContainer}
+              >
+                <Text style={styles.appButtonText}>Place New Order</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </Screen>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  piechartArea: {
+    alignItems: "center",
+  },
+  ItemNameArea: {
+    alignItems: "center",
+    padding: 18,
+  },
+  ItemNameText: {
+    fontSize: 27,
+    fontWeight: "bold",
+  },
+  imageStyle: {
+    width: 350,
+    height: 175,
+    borderRadius: 30,
+  },
+  imageContainerView: {
+    // backgroundColor: "yellow",
+    alignItems: "center",
+    paddingBottom: 30,
+  },
+
+  usedRemainingSummary: {
+    padding: 20,
+    //
+    // display: "flex",
+    // backgroundColor: colors.light,
+    // flex: 1,
+    // padding: 3,
+    borderRadius: 3,
+    marginVertical: 10,
+    marginHorizontal: 50,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 3,
+  },
+
+  usedRemainingSummaryRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+
+    alignSelf: "center",
+  },
+  summaryLeftSide: {
+    width: 150,
+  },
+  summaryRightSide: {
+    width: 50,
+  },
+  titleText: {
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  valueText: {
+    fontSize: 18,
+  },
+  centerBtns: {
+    alignItems: "center",
+    paddingBottom: 10,
+    paddingTop: 10,
+  },
+  //
+  appButtonContainer: {
+    elevation: 8,
+    backgroundColor: colors.btnColor,
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    width: 300,
+    height: 50,
+  },
+  appButtonText: {
+    fontSize: 18,
+    // color: "#fff",
+    color: colors.btnTextColor,
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase",
+  },
+});
