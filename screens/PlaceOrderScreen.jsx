@@ -274,7 +274,6 @@ export default class PlaceOrderScreen extends Component {
 
           <View style={styles.placeOrderBtnView}>
             <TouchableOpacity
-              // onPress={this.onPressPlaceNewOrder}
               onPress={() =>
                 this.props.navigation.navigate("RequestOrOrderScreen")
               }
