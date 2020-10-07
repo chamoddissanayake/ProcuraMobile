@@ -12,6 +12,7 @@ import PurchaseHistoryScreen from "../screens/PurchaseHistoryScreen";
 import PaymentsScreen from "../screens/PaymentsScreen";
 import ViewPercentageScreen from "../screens/ViewPercentageScreen";
 import PlaceOrderScreen from "../screens/PlaceOrderScreen";
+import RequestOrOrderScreen from "../screens/RequestOrOrderScreen";
 
 const Stack = createStackNavigator();
 
@@ -48,6 +49,11 @@ export default function HomeNavigator() {
       <Stack.Screen
         name={routes.PlaceOrderScreen}
         component={PlaceOrderScreen}
+      />
+
+      <Stack.Screen
+        name={routes.RequestOrOrderScreen}
+        component={RequestOrOrderScreen}
       />
     </Stack.Navigator>
   );

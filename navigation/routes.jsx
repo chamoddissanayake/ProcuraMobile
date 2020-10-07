@@ -9,4 +9,5 @@ export default Object.freeze({
   PaymentsScreen: "PaymentsScreen",
   ViewPercentageScreen: "ViewPercentageScreen",
   PlaceOrderScreen: "PlaceOrderScreen",
+  RequestOrOrderScreen: "RequestOrOrderScreen",
 });

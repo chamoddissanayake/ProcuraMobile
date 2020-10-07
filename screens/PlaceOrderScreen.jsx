@@ -12,6 +12,9 @@ import colors from "../config/colors";
 import AppText from "../common/AppText";
 import { ScrollView } from "react-native-gesture-handler";
 import NumericInput from "react-native-numeric-input";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+// import Moment from "react-moment";
+import Textarea from "react-native-textarea";
 
 export default class PlaceOrderScreen extends Component {
   constructor(props) {
@@ -33,7 +36,31 @@ export default class PlaceOrderScreen extends Component {
 
       //
       orderCount: 1,
+      selectedNeedDate: "",
+      isDatePickerVisible: false,
+      total: 0,
     };
+
+    this.showDatePicker = this.showDatePicker.bind(this);
+    this.handleConfirm = this.handleConfirm.bind(this);
+    this.hideDatePicker = this.hideDatePicker.bind(this);
+  }
+
+  componentDidMount() {
+    //last of didmount
+    this.setState({ total: this.state.price });
+  }
+
+  showDatePicker() {
+    this.setState({ isDatePickerVisible: true });
+  }
+  handleConfirm(date) {
+    this.setState({ selectedNeedDate: date });
+    this.hideDatePicker();
+  }
+
+  hideDatePicker() {
+    this.setState({ isDatePickerVisible: false });
   }
 
   render() {
@@ -163,22 +190,84 @@ export default class PlaceOrderScreen extends Component {
                 Order Details
               </AppText>
             </View>
+
+            <View style={styles.quantityContainer}>
+              <View style={styles.quantityLeft}>
+                <AppText style={styles.quantityText}>Quantity :</AppText>
+              </View>
+              <View>
+                <View>
+                  <NumericInput
+                    initValue={1}
+                    onChange={(value) => {
+                      this.setState({ orderCount: value });
+                      var temp = this.state.price * value;
+                      this.setState({ total: temp });
+                    }}
+                    totalWidth={200}
+                    totalHeight={50}
+                    iconSize={25}
+                    step={1}
+                    minValue={1}
+                    valueType="real"
+                    rounded
+                    textColor="#B0228C"
+                    iconStyle={{ color: "white" }}
+                    rightButtonBackgroundColor="#EA3788"
+                    leftButtonBackgroundColor="#E56B70"
+                  />
+                </View>
+              </View>
+            </View>
+
             <View>
-              <NumericInput
-                initValue={1}
-                onChange={(value) => this.setState({ orderCount: value })}
-                totalWidth={200}
-                totalHeight={50}
-                iconSize={25}
-                step={1}
-                minValue={1}
-                valueType="real"
-                rounded
-                textColor="#B0228C"
-                iconStyle={{ color: "white" }}
-                rightButtonBackgroundColor="#EA3788"
-                leftButtonBackgroundColor="#E56B70"
+              <AppText>Required Date:</AppText>
+            </View>
+
+            <View>
+              {/*  */}
+              <TouchableOpacity
+                style={{ backgroundColor: "#dddddd" }}
+                onPress={this.showDatePicker}
+              >
+                <AppText style={{ fontSize: 15, height: 40 }}>
+                  {this.state.selectedNeedDate.toString()}
+                </AppText>
+              </TouchableOpacity>
+
+              <DateTimePickerModal
+                isVisible={this.state.isDatePickerVisible}
+                mode="date"
+                onConfirm={this.handleConfirm}
+                onCancel={this.hideDatePicker}
               />
+              {/*  */}
+            </View>
+
+            <View style={{ paddingLeft: 10 }}>
+              <AppText>Comments</AppText>
+            </View>
+            <View style={{ padding: 10 }}>
+              <Textarea
+                containerStyle={styles.textareaContainer}
+                style={styles.textarea}
+                // onChangeText={this.onChange}
+                // defaultValue={this.state.text}
+                maxLength={120}
+                placeholder={"Write any comments here..."}
+                placeholderTextColor={"#c7c7c7"}
+                underlineColorAndroid={"transparent"}
+              />
+            </View>
+
+            <View style={styles.totPriceContainer}>
+              {/* Total price */}
+              <View style={styles.totPriceLeftSide}>
+                <AppText style={styles.totPriceTxt}>Total Price: (Rs.)</AppText>
+              </View>
+              <View>
+                <AppText style={styles.totPriceVal}>{this.state.total}</AppText>
+              </View>
             </View>
           </View>
           {/* Order Details - end */}
@@ -186,6 +275,9 @@ export default class PlaceOrderScreen extends Component {
           <View style={styles.placeOrderBtnView}>
             <TouchableOpacity
               // onPress={this.onPressPlaceNewOrder}
+              onPress={() =>
+                this.props.navigation.navigate("RequestOrOrderScreen")
+              }
               style={styles.appButtonContainer}
             >
               <Text style={styles.appButtonText}>Place Order</Text>
@@ -312,5 +404,53 @@ const styles = StyleSheet.create({
   orderDetailsTitleContainer: {
     alignItems: "center",
     padding: 10,
+  },
+  // textarea
+  textareaContainer: {
+    height: 180,
+    padding: 5,
+    backgroundColor: "#F5FCFF",
+    borderRadius: 10,
+  },
+  textarea: {
+    textAlignVertical: "top",
+    height: 170,
+    fontSize: 14,
+    color: "#333",
+    borderRadius: 10,
+  },
+
+  quantityContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+
+    padding: 10,
+  },
+
+  quantityLeft: {
+    width: 120,
+    paddingTop: 10,
+  },
+  quantityText: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+
+  totPriceContainer: {
+    padding: 10,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "flex-start",
+  },
+  totPriceTxt: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  totPriceVal: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  totPriceLeftSide: {
+    paddingTop: 5,
   },
 });
