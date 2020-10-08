@@ -22,70 +22,72 @@ export default class MainDashboardScreen extends Component {
           </View>
 
           <ScrollView>
-            {/* 1 */}
-            <View style={styles.rowStyles}>
-              <View>
-                {/* 1.1 */}
+            <View style={styles.scrollContainer}>
+              {/* 1 */}
+              <View style={styles.rowStyles}>
+                <View>
+                  {/* 1.1 */}
 
-                <DashboardCard
-                  navigation={this.props.navigation}
-                  type={"stocks"}
-                  imagePath={
-                    "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2Fstocks.png?alt=media&token=4e544238-a416-4df0-8498-71dbbac0c541"
-                  }
-                />
+                  <DashboardCard
+                    navigation={this.props.navigation}
+                    type={"stocks"}
+                    imagePath={
+                      "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2Fstocks.png?alt=media&token=4e544238-a416-4df0-8498-71dbbac0c541"
+                    }
+                  />
+                </View>
+                <View>
+                  {/* 1.2 */}
+
+                  <DashboardCard
+                    navigation={this.props.navigation}
+                    type={"quickOrder"}
+                    imagePath={
+                      "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2FquickOrder.png?alt=media&token=7d592447-02c9-4c74-9828-67f61fb62463"
+                    }
+                  />
+                </View>
               </View>
-              <View>
-                {/* 1.2 */}
 
-                <DashboardCard
-                  navigation={this.props.navigation}
-                  type={"quickOrder"}
-                  imagePath={
-                    "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2FquickOrder.png?alt=media&token=7d592447-02c9-4c74-9828-67f61fb62463"
-                  }
-                />
+              {/* 2 */}
+              <View style={styles.rowStyles}>
+                <View>
+                  {/* 2.1 */}
+
+                  <DashboardCard
+                    navigation={this.props.navigation}
+                    type={"orderStatus"}
+                    imagePath={
+                      "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2ForderStatus.png?alt=media&token=a575d2ae-1eed-4baf-96b0-64849b57d39b"
+                    }
+                  />
+                </View>
+                <View>
+                  {/* 2.2 */}
+
+                  <DashboardCard
+                    navigation={this.props.navigation}
+                    type={"purchaseHistory"}
+                    imagePath={
+                      "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2FpurchaseHistory.png?alt=media&token=e9f78cca-7dac-4e3e-946f-2b7ed94cb5c1"
+                    }
+                  />
+                </View>
               </View>
-            </View>
 
-            {/* 2 */}
-            <View style={styles.rowStyles}>
-              <View>
-                {/* 2.1 */}
-
-                <DashboardCard
-                  navigation={this.props.navigation}
-                  type={"orderStatus"}
-                  imagePath={
-                    "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2ForderStatus.png?alt=media&token=a575d2ae-1eed-4baf-96b0-64849b57d39b"
-                  }
-                />
+              {/* 3 */}
+              <View style={styles.insufficientRowStyles}>
+                <View>
+                  <DashboardCard
+                    navigation={this.props.navigation}
+                    type={"payments"}
+                    imagePath={
+                      "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2Fpayments.png?alt=media&token=ca2ce526-3007-47a4-99cf-2949d68b095c"
+                    }
+                  />
+                </View>
+                <View></View>
               </View>
-              <View>
-                {/* 2.2 */}
-
-                <DashboardCard
-                  navigation={this.props.navigation}
-                  type={"purchaseHistory"}
-                  imagePath={
-                    "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2FpurchaseHistory.png?alt=media&token=e9f78cca-7dac-4e3e-946f-2b7ed94cb5c1"
-                  }
-                />
-              </View>
-            </View>
-
-            {/* 3 */}
-            <View style={styles.insufficientRowStyles}>
-              <View>
-                <DashboardCard
-                  navigation={this.props.navigation}
-                  type={"payments"}
-                  imagePath={
-                    "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2Fpayments.png?alt=media&token=ca2ce526-3007-47a4-99cf-2949d68b095c"
-                  }
-                />
-              </View>
-              <View></View>
             </View>
           </ScrollView>
 
@@ -118,5 +120,8 @@ const styles = StyleSheet.create({
   },
   insufficientRowStyles: {
     alignItems: "center",
+  },
+  scrollContainer: {
+    paddingBottom: 10,
   },
 });
