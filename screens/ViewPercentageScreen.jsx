@@ -11,7 +11,7 @@ export default class ViewPercentageScreen extends Component {
   constructor(props) {
     super();
     this.state = {
-      itemId: "",
+      itemObjId: "",
       itemName: "Cement",
       photoPath:
         "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2Ftemp%2Fcementhd.png?alt=media&token=e354541a-29f3-43fb-b27e-9c19f16963ee",
@@ -30,6 +30,10 @@ export default class ViewPercentageScreen extends Component {
   }
 
   componentDidMount() {
+    this.setState({
+      itemObjId: this.props.route.params.itemObjId.props.children,
+    });
+
     var temp = this.state.capacity - this.state.remaining;
     // this.setState({ : temp });
   }
@@ -50,6 +54,7 @@ export default class ViewPercentageScreen extends Component {
                 {this.state.itemName}
               </AppText>
             </View>
+            <AppText>{this.state.itemObjId}</AppText>
 
             <View style={styles.imageContainerView}>
               <Image

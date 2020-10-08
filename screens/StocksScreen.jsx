@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View, TouchableOpacity, Alert } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Alert,
+  Image,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import AppText from "../common/AppText";
 import Screen from "../components/Screen";
@@ -12,8 +19,12 @@ export default class StocksScreen extends Component {
   constructor(props) {
     super();
     this.state = {
-      allStockItems: [],
       criticalPrecentage: 0,
+      limitPrice: 0,
+      normalItems: [],
+      criticalItems: [],
+      isLoadingCritical: false,
+      isLoadingNormal: false,
     };
     this.onPress = this.onPress.bind(this);
   }
@@ -22,35 +33,42 @@ export default class StocksScreen extends Component {
     // Alert.alert("Alert Title", "My Alert Msg " + txt);
     //load View percentage screen
 
-    this.props.navigation.navigate("ViewPercentageScreen");
+    this.props.navigation.navigate("ViewPercentageScreen", { itemObjId: txt });
   }
 
   componentDidMount() {
-    //load all items
+    this.setState({ isLoadingCritical: true });
+    this.setState({ isLoadingNormal: true });
 
     axios
-      .get(constants.ipAddress + "/item")
+      .get(constants.ipAddress + "/item/critical")
       .then(
         function (response) {
-          // this.setState({ isLoading: false });
-          // console.log("####");
-          // console.log(response.data);
-          // console.log("####");
-          this.setState({ allStockItems: response.data });
+          this.setState({ criticalItems: response.data });
+          this.setState({ isLoadingCritical: false });
         }.bind(this)
       )
       .catch(
         function (error) {
+          this.setState({ isLoadingCritical: false });
           console.log("error occurred -" + error);
         }.bind(this)
       );
 
-    //load critical precentage
-
-    //filter and add critial items to state obj array
-    //filter and add normal items to state obj array
-    // iterate critical items in critical section in render
-    // iterate normal items in normal section in render
+    axios
+      .get(constants.ipAddress + "/item/normal")
+      .then(
+        function (response) {
+          this.setState({ normalItems: response.data });
+          this.setState({ isLoadingNormal: false });
+        }.bind(this)
+      )
+      .catch(
+        function (error) {
+          this.setState({ isLoadingNormal: false });
+          console.log("error occurred -" + error);
+        }.bind(this)
+      );
   }
 
   render() {
@@ -62,40 +80,85 @@ export default class StocksScreen extends Component {
               Critical Items
             </AppText>
           </View>
-          <View>
-            {this.state.allStockItems.length > 0 &&
-              this.state.allStockItems.map((item) => (
-                // <li key={item._id}>
-                //   <AppText>{item.availableQty}</AppText>
 
-                // </li>
+          <View>
+            {this.state.isLoadingCritical == true && (
+              <View style={styles.criticalGearContainer}>
+                <Image
+                  source={require("../assets/itemsCriticalOrOther/gear.gif")}
+                  style={styles.criticalGearStyle}
+                />
+              </View>
+            )}
+
+            {this.state.criticalItems.length > 0 &&
+              this.state.criticalItems.map((item) => (
                 <View key={item._id}>
-                  <Text>{item._id}</Text>
+                  {/* <Text>{item._id}</Text>
                   <Text>{item.availableQty}</Text>
+                  <Text>{item.category}</Text>
+                  <Text>{item.itemName}</Text>
+                  <Text>{item.maxQty}</Text>
+                  <Text>{item.photoURL11}</Text>
+                  <Text>{item.photoURL21}</Text>
+                  <Text>{item.price}</Text>
+                  <Text>{item.supplierId}</Text>
+                  <Text>{item.weightPerItem}</Text>
+                  <Text></Text> */}
+
+                  <TouchableOpacity
+                    onPress={() => this.onPress(<Text>{item._id}</Text>)}
+                  >
+                    <StockItemCard
+                      name={item.itemName}
+                      imagePath={item.photoURL11}
+                      availableQty={item.availableQty}
+                    />
+                  </TouchableOpacity>
                 </View>
               ))}
           </View>
 
-          <TouchableOpacity onPress={() => this.onPress("Cement")}>
-            <StockItemCard
-              name={"Cement"}
-              imagePath={
-                "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2Ftemp%2Fcement.jpg?alt=media&token=307a3304-b12c-4f55-b1c4-8643aea5d2d4"
-              }
-              availableQty={100}
-            />
-          </TouchableOpacity>
-
-          <StockItemCard
-            name={"cement"}
-            imagePath={
-              "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2Ftemp%2Fcement.jpg?alt=media&token=307a3304-b12c-4f55-b1c4-8643aea5d2d4"
-            }
-            availableQty={100}
-          />
-
           <View style={styles.stocksScreenTitleView}>
             <AppText style={styles.stocksScreenTitleText}>Other Items</AppText>
+          </View>
+
+          {this.state.isLoadingCritical == true && (
+            <View style={styles.normalGearContainer}>
+              <Image
+                source={require("../assets/itemsCriticalOrOther/gear.gif")}
+                style={styles.normalGearStyle}
+              />
+            </View>
+          )}
+
+          <View>
+            {this.state.normalItems.length > 0 &&
+              this.state.normalItems.map((item) => (
+                <View key={item._id}>
+                  {/* <Text>{item._id}</Text>
+                  <Text>{item.availableQty}</Text>
+                  <Text>{item.category}</Text>
+                  <Text>{item.itemName}</Text>
+                  <Text>{item.maxQty}</Text>
+                  <Text>{item.photoURL11}</Text>
+                  <Text>{item.photoURL21}</Text>
+                  <Text>{item.price}</Text>
+                  <Text>{item.supplierId}</Text>
+                  <Text>{item.weightPerItem}</Text>
+                  <Text></Text> */}
+
+                  <TouchableOpacity
+                    onPress={() => this.onPress(<Text>{item._id}</Text>)}
+                  >
+                    <StockItemCard
+                      name={item.itemName}
+                      imagePath={item.photoURL11}
+                      availableQty={item.availableQty}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ))}
           </View>
         </ScrollView>
       </Screen>
@@ -112,5 +175,21 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 24,
     padding: 10,
+  },
+  criticalGearStyle: {
+    width: 80,
+    height: 80,
+  },
+  criticalGearContainer: {
+    paddingTop: "10%",
+    alignItems: "center",
+  },
+  normalGearStyle: {
+    width: 80,
+    height: 80,
+  },
+  normalGearContainer: {
+    paddingTop: "10%",
+    alignItems: "center",
   },
 });

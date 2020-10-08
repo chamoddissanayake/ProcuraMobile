@@ -1,5 +1,5 @@
 export default Object.freeze({
-  Home: "Home",
+  LoadingScreen: "LoadingScreen",
   LoginScreen: "LoginScreen",
   MainDashboardScreen: "MainDashboardScreen",
   StocksScreen: "StocksScreen",
