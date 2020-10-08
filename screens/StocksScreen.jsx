@@ -4,11 +4,17 @@ import { ScrollView } from "react-native-gesture-handler";
 import AppText from "../common/AppText";
 import Screen from "../components/Screen";
 import StockItemCard from "../components/StockItemCard";
+import constants from "../utils/constants";
+
+const axios = require("axios").default;
 
 export default class StocksScreen extends Component {
   constructor(props) {
     super();
-    this.state = {};
+    this.state = {
+      allStockItems: [],
+      criticalPrecentage: 0,
+    };
     this.onPress = this.onPress.bind(this);
   }
 
@@ -19,6 +25,34 @@ export default class StocksScreen extends Component {
     this.props.navigation.navigate("ViewPercentageScreen");
   }
 
+  componentDidMount() {
+    //load all items
+
+    axios
+      .get(constants.ipAddress + "/item")
+      .then(
+        function (response) {
+          // this.setState({ isLoading: false });
+          // console.log("####");
+          // console.log(response.data);
+          // console.log("####");
+          this.setState({ allStockItems: response.data });
+        }.bind(this)
+      )
+      .catch(
+        function (error) {
+          console.log("error occurred -" + error);
+        }.bind(this)
+      );
+
+    //load critical precentage
+
+    //filter and add critial items to state obj array
+    //filter and add normal items to state obj array
+    // iterate critical items in critical section in render
+    // iterate normal items in normal section in render
+  }
+
   render() {
     return (
       <Screen navigation={this.props.navigation}>
@@ -27,6 +61,19 @@ export default class StocksScreen extends Component {
             <AppText style={[styles.stocksScreenTitleText, { color: "red" }]}>
               Critical Items
             </AppText>
+          </View>
+          <View>
+            {this.state.allStockItems.length > 0 &&
+              this.state.allStockItems.map((item) => (
+                // <li key={item._id}>
+                //   <AppText>{item.availableQty}</AppText>
+
+                // </li>
+                <View key={item._id}>
+                  <Text>{item._id}</Text>
+                  <Text>{item.availableQty}</Text>
+                </View>
+              ))}
           </View>
 
           <TouchableOpacity onPress={() => this.onPress("Cement")}>

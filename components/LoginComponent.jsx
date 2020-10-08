@@ -60,10 +60,12 @@ export default class LoginComponent extends Component {
             }
           }.bind(this)
         )
-        .catch(function (error) {
-          self.setState({ isLoading: false });
-          alert("error occurred -" + error);
-        });
+        .catch(
+          function (error) {
+            this.setState({ isLoading: false });
+            alert("error occurred -" + error);
+          }.bind(this)
+        );
       //
     }
   };
