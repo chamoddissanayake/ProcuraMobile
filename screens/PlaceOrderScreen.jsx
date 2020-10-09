@@ -17,6 +17,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 // import Moment from "react-moment";
 import Textarea from "react-native-textarea";
 import constants from "../utils/constants";
+import Moment from 'moment';
 
 const axios = require("axios").default;
 
@@ -40,6 +41,14 @@ export default class PlaceOrderScreen extends Component {
         5: "Katharagama",
       },
       selectedSite: "",
+      //
+      selectedPriority:"",
+      priorityOptions:{
+        1:"Min",
+        2:"Normal",
+        3:"High"
+      },
+
 
       //
       orderCount: 1,
@@ -150,7 +159,14 @@ axios
     this.setState({ isDatePickerVisible: true });
   }
   handleConfirm(date) {
-    this.setState({ selectedNeedDate: date });
+
+    Moment.locale('en');
+    var dt = date;
+    Moment(dt).format("MMM Do YYYY")
+    var formattedDate = Moment(dt).format('dddd DD MMM YYYY');
+
+
+    this.setState({ selectedNeedDate: formattedDate });
     this.hideDatePicker();
   }
 
@@ -239,20 +255,7 @@ axios
             </View>
             <View style={styles.constructionSiteRightSide}>
               <View style={styles.pickerContainer}>
-                {/* <Picker
-                selectedValue={this.state.selectedValue}
-                style={{ height: 50, width: 150 }}
-                // onValueChange={(itemValue, itemIndex) =>
-                //   setSelectedValue(itemValue)
-                // }
-              >
-                <Picker.Item label="Australia" value="java" />
-                <Picker.Item label="Canada" value="js" />
-                <Picker.Item label="India" value="js" />
-                <Picker.Item label="New Zealand" value="js" />
-                <Picker.Item label="Singapre" value="js" />
-                <Picker.Item label="USA" value="js" />
-              </Picker> */}
+                
 
                 <Picker
                   style={{ width: 200 }}
@@ -316,28 +319,62 @@ axios
               </View>
             </View>
 
-            <View>
-              <AppText>Required Date:</AppText>
-            </View>
 
-            <View>
-              {/*  */}
-              <TouchableOpacity
-                style={{ backgroundColor: "#dddddd" }}
-                onPress={this.showDatePicker}
-              >
-                <AppText style={{ fontSize: 15, height: 40 }}>
-                  {this.state.selectedNeedDate.toString()}
-                </AppText>
-              </TouchableOpacity>
 
-              <DateTimePickerModal
-                isVisible={this.state.isDatePickerVisible}
-                mode="date"
-                onConfirm={this.handleConfirm}
-                onCancel={this.hideDatePicker}
-              />
-              {/*  */}
+
+<View  style={{paddingLeft:10}}>
+<AppText>Required Date:</AppText>
+</View>            
+
+<View  style={{alignItems:"center", paddingTop:7}}>
+<TouchableOpacity 
+            style={{ backgroundColor: "#dddddd",borderRadius:30, width:"80%" }}
+            onPress={this.showDatePicker}
+          >
+            <AppText style={{ fontSize: 16, fontWeight:"bold", marginTop: 10, height: 40, textAlign: 'center' }}>
+              {this.state.selectedNeedDate.toString()}
+            </AppText>
+          </TouchableOpacity>
+
+          <DateTimePickerModal
+            isVisible={this.state.isDatePickerVisible}
+            mode="date"
+            onConfirm={this.handleConfirm}
+            onCancel={this.hideDatePicker}
+          />
+</View>
+
+
+
+
+        
+
+
+<AppText></AppText>
+            <View style={styles.priorityContainer}>
+                    <View style={{width:100, paddingLeft:10, paddingTop:15}}><AppText>Priority</AppText></View>
+                    <View style={{backgroundColor:"#dddddd", borderRadius:30}}>
+
+                        <Picker
+                          style={{ width: 200 }}
+                          mode="dropdown"
+                          selectedValue={this.state.selectedPriority}
+                          onValueChange={(itemValue, itemIndex) =>
+                            this.setState({ selectedPriority: itemValue })
+                          }
+                        >
+                          {Object.keys(this.state.priorityOptions).map((key) => {
+                            return (
+                              <Picker.Item
+                                label={this.state.priorityOptions[key]}
+                                value={key}
+                                key={key}
+                              />
+                            ); //if you have a bunch of keys value pair
+                          })}
+                        </Picker>
+                      
+                    </View>
             </View>
 
             <View style={{ paddingLeft: 10 }}>
@@ -548,4 +585,9 @@ const styles = StyleSheet.create({
   totPriceLeftSide: {
     paddingTop: 5,
   },
+  priorityContainer:{
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingBottom:10
+  }
 });
