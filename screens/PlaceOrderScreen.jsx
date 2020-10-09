@@ -33,6 +33,7 @@ export default class PlaceOrderScreen extends Component {
       itemName: "",
       supplierId:"",
       supplierLogo:"",
+      loggedInUser:"aaa",
       options: {
         1: "Colombo",
         2: "Galle",
@@ -48,21 +49,46 @@ export default class PlaceOrderScreen extends Component {
         2:"Normal",
         3:"High"
       },
-
-
       //
       orderCount: 1,
       selectedNeedDate: "",
       isDatePickerVisible: false,
       total: 0,
+      comment:"",
+      itemCategory:"",
+      limitPrice:0
     };
 
     this.showDatePicker = this.showDatePicker.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.hideDatePicker = this.hideDatePicker.bind(this);
+    this.onChangeComment = this.onChangeComment.bind(this);
+    this.handlePlaceOrderBtnClick = this.handlePlaceOrderBtnClick.bind(this);
+    
+    
   }
 
   componentDidMount() {
+
+    //load critical value from db -start
+    
+    axios
+    .get(constants.ipAddress + "/settings")
+    .then(
+      function (response) {
+         this.setState({ limitPrice: response.data[0].limitPrice });
+        // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
+      }.bind(this)
+    )
+    .catch(
+      function (error) {
+        console.log("error occurred -" + error);
+      }.bind(this)
+    );
+
+    
+    //load critical value from db -end
+
 
     this.setState({
       itemObjId: this.props.route.params.itemObjId,
@@ -79,15 +105,13 @@ axios
         this.setState({ itemName: response.data[0].itemName });
         this.setState({ availableQty: response.data[0].availableQty });
         this.setState({ price: response.data[0].price });
+        this.setState({ itemCategory: response.data[0].category });
 
         this.setState({
           supplierId: response.data[0].supplierId
       }, () => {
 
           //load supplier data
-
-
-
 
           axios
           .get(constants.ipAddress + "/supplier/id="+this.state.supplierId+"")
@@ -107,33 +131,9 @@ axios
           );
 
 
-
-
-
-
-
-
-
           // load supplier data end
 
-
-
-
-
-
-
       });
-    // "_id": "5f7ed8f90ecdfea0c1e9ff74",  //
-    // "itemName": "Wire",//
-        // "availableQty": "400",//
-        // "price": "500",//
-
-        // "category": "NORMAL",
-        // "maxQty": "1000",
-        // "photoURL11":"",
-        // "photoURL21": "",
-        // "supplierId": "S002",
-        // "weightPerItem": "5",
 
 
         // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
@@ -153,6 +153,117 @@ axios
 
     //last of didmount
     this.setState({ total: this.state.price });
+  }
+
+  handlePlaceOrderBtnClick(){
+
+    if(this.state.itemCategory == 'SPECIAL_APPROVAL' || this.state.total >= this.state.limitPrice){
+      //Need approval
+      axios
+      .post(constants.ipAddress + "/requisition/register",{
+        loggedInUser: this.state.loggedInUser,
+        itemObjId: this.state.itemObjId,
+        supplierId :this.state.supplierId,
+        orderCount: this.state.orderCount,
+        selectedNeedDate:this.state.selectedNeedDate,
+        selectedSite: this.state.selectedSite,
+        total:this.state.total,
+        comment:this.state.comment,
+        itemCategory:this.state.itemCategory,
+        status: "APPROVAL_PENDING",
+        priority:this.state.selectedPriority
+
+      })
+      .then(
+        function (response) {
+
+          if(this.state.itemCategory == 'SPECIAL_APPROVAL' && this.state.total < this.state.limitPrice ){
+            //need approval for special approval item
+            this.props.navigation.navigate("RequestOrOrderScreen",{type:"SPECIAL_APPROVAL_ONLY"});
+    
+          }else if(this.state.itemCategory != 'SPECIAL_APPROVAL' && this.state.total >= this.state.limitPrice ){
+            //need approval for price limit
+            this.props.navigation.navigate("RequestOrOrderScreen",{type:"LIMIT_PRICE_ONLY"});
+    
+          }else if(this.state.itemCategory == 'SPECIAL_APPROVAL' && this.state.total >= this.state.limitPrice ){
+            //need approval for price limit and special approval item
+            this.props.navigation.navigate("RequestOrOrderScreen",{type:"SPECIAL_APPROVAL_AND_LIMIT_PRICE_ONLY"});
+          }   
+
+          // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
+        }.bind(this)
+      )
+      .catch(
+        function (error) {
+          console.log("error occurred -" + error);
+        }.bind(this)
+      );
+
+
+    }else{
+      //No need of approval - place order
+   
+
+      axios
+      .post(constants.ipAddress + "/requisition/register",{
+        loggedInUser: this.state.loggedInUser,
+        itemObjId: this.state.itemObjId,
+        supplierId :this.state.supplierId,
+        orderCount: this.state.orderCount,
+        selectedNeedDate:this.state.selectedNeedDate,
+        selectedSite: this.state.selectedSite,
+        total:this.state.total,
+        comment:this.state.comment,
+        itemCategory:this.state.itemCategory,
+        status: "ORDER_PLACED",
+        priority:this.state.selectedPriority
+
+      })
+      .then(
+        function (response) {
+
+          this.props.navigation.navigate("RequestOrOrderScreen",{type:"ORDERED"});
+          // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
+        }.bind(this)
+      )
+      .catch(
+        function (error) {
+          console.log("error occurred -" + error);
+        }.bind(this)
+      );
+
+
+
+
+
+    }
+
+
+    
+    
+    
+    
+
+
+    console.log("&&&&");
+    console.log(this.state.loggedInUser);
+    console.log(this.state.itemObjId);
+    console.log(this.state.supplierId);
+    console.log(this.state.orderCount);
+    console.log(this.state.selectedNeedDate);
+    console.log(this.state.selectedSite);
+    console.log(this.state.total);
+    console.log(this.state.comment);
+    console.log(this.state.itemCategory);
+    console.log(this.state.limitPrice);
+    
+    console.log("&&&&");
+
+
+  }
+
+  onChangeComment(txt){
+    this.setState({ comment: txt });
   }
 
   showDatePicker() {
@@ -261,7 +372,6 @@ axios
                   style={{ width: 200 }}
                   mode="dropdown"
                   selectedValue={this.state.selectedSite}
-                  onValueChange={() => {}}
                   onValueChange={(itemValue, itemIndex) =>
                     this.setState({ selectedSite: itemValue })
                   }
@@ -384,7 +494,8 @@ axios
               <Textarea
                 containerStyle={styles.textareaContainer}
                 style={styles.textarea}
-                // onChangeText={this.onChange}
+                // onChangeText={this.onChangeComment}
+                onChangeText={text => this.onChangeComment(text)}
                 // defaultValue={this.state.text}
                 maxLength={120}
                 placeholder={"Write any comments here..."}
@@ -407,9 +518,7 @@ axios
 
           <View style={styles.placeOrderBtnView}>
             <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate("RequestOrOrderScreen")
-              }
+              onPress={this.handlePlaceOrderBtnClick}
               style={styles.appButtonContainer}
             >
               <Text style={styles.appButtonText}>Place Order</Text>
