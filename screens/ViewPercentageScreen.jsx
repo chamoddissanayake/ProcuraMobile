@@ -1,28 +1,31 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View, Image } from "react-native";
+import { Text, StyleSheet, View, Image, Alert } from "react-native";
 import Screen from "../components/Screen";
 import PureChart from "react-native-pure-chart";
 import AppText from "../common/AppText";
 import AppButton from "../common/AppButton";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import colors from "../config/colors";
+import constants from "../utils/constants";
+
+const axios = require("axios").default;
+
 
 export default class ViewPercentageScreen extends Component {
+  
   constructor(props) {
     super();
     this.state = {
       itemObjId: "",
-      itemName: "Cement",
-      photoPath:
-        "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2Ftemp%2Fcementhd.png?alt=media&token=e354541a-29f3-43fb-b27e-9c19f16963ee",
-
-      capacity: 200,
+      itemName: "",
+      photoPath:"",
+      capacity: 100,
       //   used: 0,
       //   remaining: 50,
 
       dataSet: [
-        { value: 90, label: "Used", color: "red" },
-        { value: 10, label: "Remaining", color: "blue" },
+        { value: 30, label: "Used", color: "red" },
+        { value:70, label: "Remaining", color: "blue" },
         // 0 value - used
         // 1 value - remaining
       ],
@@ -30,16 +33,67 @@ export default class ViewPercentageScreen extends Component {
   }
 
   componentDidMount() {
+
     this.setState({
       itemObjId: this.props.route.params.itemObjId.props.children,
-    });
+  }, () => {
+    axios
+    .get(constants.ipAddress + "/item/id="+this.state.itemObjId+"")
+    .then(
+      function (response) {
+        // this.setState({ criticalItems: response.data });
+        // console.log(response.data);
 
-    var temp = this.state.capacity - this.state.remaining;
-    // this.setState({ : temp });
+
+        this.setState({ itemObjId: response.data[0]._id });
+        this.setState({ itemName: response.data[0].itemName });
+        this.setState({ photoPath: response.data[0].photoURL21 });
+        this.setState({ capacity: response.data[0].maxQty });
+        
+        var usedQty = response.data[0].maxQty - response.data[0].availableQty;
+        var availQty = response.data[0].availableQty;
+
+        // Alert.alert(usedQty.toString(), response.data[0].maxQty.toString());
+        
+//CHECK - > fill usedQty to state dataset
+
+
+// this.setState(prevState => ({
+//   dataSet: {
+//       ...prevState.dataSet,
+//       [prevState.dataSet[0].value]: usedQty,
+//       [prevState.dataSet[1].value]: availQty,
+//   },
+// }));
+
+
+// dataSet: [
+//   { value: 30, label: "Used", color: "red" },
+//   { value:70, label: "Remaining", color: "blue" },
+//   // 0 value - used
+//   // 1 value - remaining
+// ],
+
+
+      
+        // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
+      }.bind(this)
+    )
+    .catch(
+      function (error) {
+        console.log("error occurred -" + error);
+      }.bind(this)
+    );
+  });
+
+  
+
+
   }
 
   onPressPlaceNewOrder = () => {
-    this.props.navigation.navigate("PlaceOrderScreen");
+    Alert.alert(this.state.itemObjId);
+    this.props.navigation.navigate("PlaceOrderScreen",{itemObjId:this.state.itemObjId});
   };
 
   render() {
@@ -54,7 +108,7 @@ export default class ViewPercentageScreen extends Component {
                 {this.state.itemName}
               </AppText>
             </View>
-            <AppText>{this.state.itemObjId}</AppText>
+
 
             <View style={styles.imageContainerView}>
               <Image

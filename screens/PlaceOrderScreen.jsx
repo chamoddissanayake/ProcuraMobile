@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Picker,
+  Alert,
 } from "react-native";
 import Screen from "../components/Screen";
 import colors from "../config/colors";
@@ -15,16 +16,22 @@ import NumericInput from "react-native-numeric-input";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 // import Moment from "react-moment";
 import Textarea from "react-native-textarea";
+import constants from "../utils/constants";
+
+const axios = require("axios").default;
+
 
 export default class PlaceOrderScreen extends Component {
   constructor(props) {
     super();
     this.state = {
-      supplier: "Holcim",
-      price: 1000,
-      Item: "Cement",
-      supplierLogo:
-        "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2Ftemp%2Fholcim.jpg?alt=media&token=1f95c2ee-44fa-4b82-b8f3-ad1c30724fac",
+      itemObjId:"",
+      supplier: "",
+      availableQty:1,
+      price: 0,
+      itemName: "",
+      supplierId:"",
+      supplierLogo:"",
       options: {
         1: "Colombo",
         2: "Galle",
@@ -47,6 +54,94 @@ export default class PlaceOrderScreen extends Component {
   }
 
   componentDidMount() {
+
+    this.setState({
+      itemObjId: this.props.route.params.itemObjId,
+  }, () => {
+
+//load item data
+
+axios
+    .get(constants.ipAddress + "/item/id="+this.state.itemObjId+"")
+    .then(
+      function (response) {
+
+        this.setState({ itemObjId: response.data[0]._id });
+        this.setState({ itemName: response.data[0].itemName });
+        this.setState({ availableQty: response.data[0].availableQty });
+        this.setState({ price: response.data[0].price });
+
+        this.setState({
+          supplierId: response.data[0].supplierId
+      }, () => {
+
+          //load supplier data
+
+
+
+
+          axios
+          .get(constants.ipAddress + "/supplier/id="+this.state.supplierId+"")
+          .then(
+            function (response) {
+
+               this.setState({ supplier: response.data[0].name });
+               this.setState({ supplierLogo: response.data[0].supplierLogoURL });
+
+              // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
+            }.bind(this)
+          )
+          .catch(
+            function (error) {
+              console.log("error occurred -" + error);
+            }.bind(this)
+          );
+
+
+
+
+
+
+
+
+
+          // load supplier data end
+
+
+
+
+
+
+
+      });
+    // "_id": "5f7ed8f90ecdfea0c1e9ff74",  //
+    // "itemName": "Wire",//
+        // "availableQty": "400",//
+        // "price": "500",//
+
+        // "category": "NORMAL",
+        // "maxQty": "1000",
+        // "photoURL11":"",
+        // "photoURL21": "",
+        // "supplierId": "S002",
+        // "weightPerItem": "5",
+
+
+        // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
+      }.bind(this)
+    )
+    .catch(
+      function (error) {
+        console.log("error occurred -" + error);
+      }.bind(this)
+    );
+
+
+// End
+  })
+
+ 
+
     //last of didmount
     this.setState({ total: this.state.price });
   }
@@ -113,7 +208,7 @@ export default class PlaceOrderScreen extends Component {
                   </View>
                   <View style={styles.supplierValueView}>
                     <AppText style={styles.supplierValueTxt}>
-                      {this.state.Item}
+                      {this.state.itemName}
                     </AppText>
                   </View>
                 </View>
@@ -209,6 +304,7 @@ export default class PlaceOrderScreen extends Component {
                     iconSize={25}
                     step={1}
                     minValue={1}
+                    maxValue={this.state.availableQty}
                     valueType="real"
                     rounded
                     textColor="#B0228C"
