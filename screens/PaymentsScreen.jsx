@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { FlatList, ScrollView } from "react-native";
+import { FlatList } from "react-native";
 import AppText from '../common/AppText';
 import PayCard from '../components/PayCard';
 import Screen from "../components/Screen";
+import { ScrollView } from "react-native-gesture-handler";
 import AwesomeAlert from 'react-native-awesome-alerts';
 
 const data = [
