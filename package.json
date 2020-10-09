@@ -21,6 +21,7 @@
     "react": "~16.11.0",
     "react-dom": "~16.11.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
+    "react-native-awesome-alerts": "^1.4.2",
     "react-native-awesome-text-input": "^1.1.2",
     "react-native-gesture-handler": "~1.6.0",
     "react-native-modal-datetime-picker": "^9.0.0",
