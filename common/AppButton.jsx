@@ -35,14 +35,14 @@ export default function AppButton({
           {buttonText()}
         </TouchableOpacity>
       ) : (
-        <TouchableNativeFeedback
-          style={[styles.btn, { backgroundColor: colors[color] }]}
-          onPress={onPress}
-        >
-          {icon && buttonIcon()}
-          {buttonText()}
-        </TouchableNativeFeedback>
-      )}
+          <TouchableNativeFeedback
+            style={[styles.btn, { backgroundColor: colors[color] }]}
+            onPress={onPress}
+          >
+            {icon && buttonIcon()}
+            {buttonText()}
+          </TouchableNativeFeedback>
+        )}
     </React.Fragment>
   );
 }
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    padding: 15,
+    padding: 10,
     width: "80%",
     marginVertical: 10,
     display: "flex",
