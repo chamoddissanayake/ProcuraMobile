@@ -40,6 +40,7 @@ export default class PlaceOrderScreen extends Component {
         3: "Kandy",
         4: "Anuradhapura",
         5: "Katharagama",
+        
       },
       selectedSite: "",
       //
@@ -69,6 +70,26 @@ export default class PlaceOrderScreen extends Component {
   }
 
   componentDidMount() {
+
+    // load site locations - start
+    axios
+    .get(constants.ipAddress + "/location/all")
+    .then(
+      function (response) {
+         this.setState({ limitPrice: response.data[0].limitPrice });
+      
+
+
+      }.bind(this)
+    )
+    .catch(
+      function (error) {
+        console.log("error occurred -" + error);
+      }.bind(this)
+    );
+
+    // load site locations - end
+
 
     //load critical value from db -start
     
@@ -233,16 +254,8 @@ axios
       );
 
 
-
-
-
     }
 
-
-    
-    
-    
-    
 
 
     console.log("&&&&");
@@ -452,15 +465,9 @@ axios
             onConfirm={this.handleConfirm}
             onCancel={this.hideDatePicker}
           />
-</View>
+        </View>
 
-
-
-
-        
-
-
-<AppText></AppText>
+        <AppText></AppText>
             <View style={styles.priorityContainer}>
                     <View style={{width:100, paddingLeft:10, paddingTop:15}}><AppText>Priority</AppText></View>
                     <View style={{backgroundColor:"#dddddd", borderRadius:30}}>
