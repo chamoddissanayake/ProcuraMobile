@@ -4,9 +4,20 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import routes from "./routes";
 
-import HomeNavigator from "./HomeNavigator";
-
 import { AntDesign } from "@expo/vector-icons";
+import LoadingScreen from "../screens/LoadingScreen";
+import LoginScreen from "../screens/LoginScreen";
+
+import MainDashboardScreen from "../screens/MainDashboardScreen";
+import StocksScreen from "../screens/StocksScreen";
+import QuickOrderScreen from "../screens/QuickOrderScreen";
+import OrderStatusScreen from "../screens/OrderStatusScreen";
+import PurchaseHistoryScreen from "../screens/PurchaseHistoryScreen";
+import PaymentsScreen from "../screens/PaymentsScreen";
+import ViewPercentageScreen from "../screens/ViewPercentageScreen";
+import PlaceOrderScreen from "../screens/PlaceOrderScreen";
+import RequestOrOrderScreen from "../screens/RequestOrOrderScreen";
+import LoadingNavigtor from "./LoadingNavigator";
 
 const Drawer = createDrawerNavigator();
 
@@ -14,13 +25,13 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Drawer.Navigator
-        initialRouteName={routes.Home}
+        initialRouteName={routes.LoadingScreen}
         drawerLockMode="locked-closed"
         drawerType="front"
       >
         <Drawer.Screen
           name={routes.MainDashboardScreen}
-          component={HomeNavigator}
+          component={LoadingNavigtor}
           options={{
             title: "Home",
             drawerIcon: ({ focused, size }) => (
@@ -31,7 +42,7 @@ export default function AppNavigator() {
 
         <Drawer.Screen
           name={routes.StocksScreen}
-          component={HomeNavigator}
+          component={StocksScreen}
           options={{
             title: "Stocks",
             drawerIcon: ({ focused, size }) => (
@@ -41,7 +52,7 @@ export default function AppNavigator() {
         />
         <Drawer.Screen
           name={routes.QuickOrderScreen}
-          component={HomeNavigator}
+          component={QuickOrderScreen}
           options={{
             title: "Quick Order",
             drawerIcon: ({ focused, size }) => (
@@ -51,7 +62,7 @@ export default function AppNavigator() {
         />
         <Drawer.Screen
           name={routes.OrderStatusScreen}
-          component={HomeNavigator}
+          component={OrderStatusScreen}
           options={{
             title: "Order Status",
             drawerIcon: ({ focused, size }) => (
@@ -61,7 +72,7 @@ export default function AppNavigator() {
         />
         <Drawer.Screen
           name={routes.PurchaseHistoryScreen}
-          component={HomeNavigator}
+          component={PurchaseHistoryScreen}
           options={{
             title: "Purchase History",
             drawerIcon: ({ focused, size }) => (
@@ -71,7 +82,7 @@ export default function AppNavigator() {
         />
         <Drawer.Screen
           name={routes.PaymentsScreen}
-          component={HomeNavigator}
+          component={PaymentsScreen}
           options={{
             title: "Payments",
             drawerIcon: ({ focused, size }) => (

@@ -1,11 +1,19 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View, TextInput, Button, Image } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  View,
+  TextInput,
+  Button,
+  Image,
+  Alert,
+} from "react-native";
 import constants from "../utils/constants";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
 import colors from "../config/colors";
 import AppText from "../common/AppText";
 import AppButton from "../common/AppButton";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 
 const axios = require("axios").default;
 
@@ -15,6 +23,7 @@ export default class LoginComponent extends Component {
     this.state = {
       username: "",
       password: "",
+      isLoading: false,
     };
 
     this.handleUsername = this.handleUsername.bind(this);
@@ -29,115 +38,136 @@ export default class LoginComponent extends Component {
     this.setState({ password: text });
   };
   handleLogin = () => {
-    // axios
-    //   .post(constants.ipAddress + "/siteManager/login", {
-    //     username: this.state.username,
-    //     password: this.state.password,
-    //   })
-    //   .then(function (response) {
-    //     console.log(response.data.isFound);
-    //     if (response.data.isFound == "true") {
-    //       alert("User found");
-    //       // this.props.navigation.navigate("MainDashboardScreen");
-    //       this.props.navigation.navigate("MainDashboardScreen");
-    //     } else {
-    //       alert("User not found");
-    //     }
-    //   })
-    //   .catch(function (error) {
-    //     alert("error occurred -" + error);
-    //   });
-
-    this.props.navigation.navigate("MainDashboardScreen");
+    if (this.state.username == "") {
+      Alert.alert("Empty", "Please fill username");
+    } else if (this.state.password === "") {
+      Alert.alert("Empty", "Please fill password");
+    } else {
+      //
+      this.setState({ isLoading: true });
+      axios
+        .post(constants.ipAddress + "/siteManager/login", {
+          username: this.state.username,
+          password: this.state.password,
+        })
+        .then(
+          function (response) {
+            this.setState({ isLoading: false });
+            if (response.data.isFound == "true") {
+              this.props.navigation.navigate("MainDashboardScreen");
+            } else {
+              Alert.alert("User not found", "Please check credentials");
+            }
+          }.bind(this)
+        )
+        .catch(
+          function (error) {
+            this.setState({ isLoading: false });
+            alert("error occurred -" + error);
+          }.bind(this)
+        );
+      //
+    }
   };
 
   render() {
     return (
       <View>
-        <View style={styles.logoImageContainer}>
-          <Image
-            source={require("../assets/login/logo.png")}
-            style={styles.logoImageStyle}
-          />
-        </View>
+        <ScrollView>
+          <View style={styles.logoImageContainer}>
+            <Image
+              source={require("../assets/login/logo.png")}
+              style={styles.logoImageStyle}
+            />
+          </View>
 
-        <View style={styles.fullContainer}>
-          <View style={styles.userNameFullContainer}>
-            <View style={styles.iconContainer}>
-              <Image
-                source={require("../assets/login/usernameIcon.png")}
-                style={styles.iconStyle}
-              />
+          <View style={styles.fullContainer}>
+            <View style={styles.userNameFullContainer}>
+              <View style={styles.iconContainer}>
+                <Image
+                  source={require("../assets/login/usernameIcon.png")}
+                  style={styles.iconStyle}
+                />
+              </View>
+              <View style={styles.usernameContainer}>
+                <AwesomeTextInput
+                  label="Username"
+                  onChangeText={this.handleUsername}
+                  customStyles={{
+                    container: {
+                      borderWidth: 1,
+                      borderColor: "grey",
+                      borderRadius: 10,
+                    },
+                    title: {
+                      backgroundColor: colors.light,
+                    },
+                  }}
+                />
+              </View>
             </View>
-            <View style={styles.usernameContainer}>
-              <AwesomeTextInput
-                label="Username"
-                onChangeText={this.handleUsername}
-                customStyles={{
-                  container: {
-                    borderWidth: 1,
-                    borderColor: "grey",
-                    borderRadius: 10,
-                  },
-                  title: {
-                    backgroundColor: colors.light,
-                  },
-                }}
-              />
+
+            <AppText></AppText>
+
+            <View style={styles.passwordFullContainer}>
+              <View style={styles.iconContainer}>
+                <Image
+                  source={require("../assets/login/passwordIcon.png")}
+                  style={styles.iconStyle}
+                />
+              </View>
+              <View style={styles.passwordContainer}>
+                <AwesomeTextInput
+                  label="Password"
+                  onChangeText={this.handlePassword}
+                  secureTextEntry={true}
+                  customStyles={{
+                    container: {
+                      borderWidth: 1,
+                      borderColor: "grey",
+                      borderRadius: 10,
+                    },
+                    title: {
+                      backgroundColor: colors.light,
+                    },
+                  }}
+                />
+              </View>
             </View>
           </View>
 
-          <AppText></AppText>
-
-          <View style={styles.passwordFullContainer}>
-            <View style={styles.iconContainer}>
-              <Image
-                source={require("../assets/login/passwordIcon.png")}
-                style={styles.iconStyle}
-              />
-            </View>
-            <View style={styles.passwordContainer}>
-              <AwesomeTextInput
-                label="Password"
-                onChangeText={this.handlePassword}
-                secureTextEntry={true}
-                customStyles={{
-                  container: {
-                    borderWidth: 1,
-                    borderColor: "grey",
-                    borderRadius: 10,
-                  },
-                  title: {
-                    backgroundColor: colors.light,
-                  },
-                }}
-              />
-            </View>
-          </View>
-        </View>
-
-        {/* <Button
+          {/* <Button
           style={{ width: "70%" }}
           color={colors.primary}
           title={"Login"}
           onPress={this.handleLogin}
         /> */}
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity>
-            <AppButton
-              widht="70%"
-              title="Login"
-              color="primary"
-              onPress={this.handleLogin}
-            />
-          </TouchableOpacity>
-        </View>
-        {/* () => this.props.navigation.navigate("MainDashboardScreen") */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity>
+              <AppButton
+                widht="70%"
+                title="Login"
+                color="primary"
+                onPress={this.handleLogin}
+              />
+            </TouchableOpacity>
+          </View>
+          {/* () => this.props.navigation.navigate("MainDashboardScreen") */}
 
-        <View style={styles.forgotPasswordContainer}>
-          <AppText style={styles.forgotPasswordTxt}>Forgot Password</AppText>
-        </View>
+          {this.state.isLoading && (
+            <View style={styles.waitContainer}>
+              <Image
+                source={require("../assets/login/wait.gif")}
+                style={styles.lognWaitStyle}
+              />
+            </View>
+          )}
+
+          <View style={styles.forgotPasswordContainer}>
+            <AppText style={styles.forgotPasswordTxt}>Forgot Password</AppText>
+          </View>
+        </ScrollView>
       </View>
     );
   }
@@ -189,10 +219,17 @@ const styles = StyleSheet.create({
     paddingTop: "5%",
   },
   forgotPasswordContainer: {
-    marginTop: "5%",
+    marginTop: "1%",
     alignItems: "center",
   },
   forgotPasswordTxt: {
     fontSize: 14,
+  },
+  lognWaitStyle: {
+    width: 50,
+    height: 50,
+  },
+  waitContainer: {
+    alignItems: "center",
   },
 });

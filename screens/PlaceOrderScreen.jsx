@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Picker,
+  Alert,
 } from "react-native";
 import Screen from "../components/Screen";
 import colors from "../config/colors";
@@ -15,16 +16,24 @@ import NumericInput from "react-native-numeric-input";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 // import Moment from "react-moment";
 import Textarea from "react-native-textarea";
+import constants from "../utils/constants";
+import Moment from 'moment';
+
+const axios = require("axios").default;
+
 
 export default class PlaceOrderScreen extends Component {
   constructor(props) {
     super();
     this.state = {
-      supplier: "Holcim",
-      price: 1000,
-      Item: "Cement",
-      supplierLogo:
-        "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2Ftemp%2Fholcim.jpg?alt=media&token=1f95c2ee-44fa-4b82-b8f3-ad1c30724fac",
+      itemObjId:"",
+      supplier: "",
+      availableQty:1,
+      price: 0,
+      itemName: "",
+      supplierId:"",
+      supplierLogo:"",
+      loggedInUser:"aaa",
       options: {
         1: "Colombo",
         2: "Galle",
@@ -33,29 +42,242 @@ export default class PlaceOrderScreen extends Component {
         5: "Katharagama",
       },
       selectedSite: "",
-
+      //
+      selectedPriority:"",
+      priorityOptions:{
+        1:"Min",
+        2:"Normal",
+        3:"High"
+      },
       //
       orderCount: 1,
       selectedNeedDate: "",
       isDatePickerVisible: false,
       total: 0,
+      comment:"",
+      itemCategory:"",
+      limitPrice:0
     };
 
     this.showDatePicker = this.showDatePicker.bind(this);
     this.handleConfirm = this.handleConfirm.bind(this);
     this.hideDatePicker = this.hideDatePicker.bind(this);
+    this.onChangeComment = this.onChangeComment.bind(this);
+    this.handlePlaceOrderBtnClick = this.handlePlaceOrderBtnClick.bind(this);
+    
+    
   }
 
   componentDidMount() {
+
+    //load critical value from db -start
+    
+    axios
+    .get(constants.ipAddress + "/settings")
+    .then(
+      function (response) {
+         this.setState({ limitPrice: response.data[0].limitPrice });
+        // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
+      }.bind(this)
+    )
+    .catch(
+      function (error) {
+        console.log("error occurred -" + error);
+      }.bind(this)
+    );
+
+    
+    //load critical value from db -end
+
+
+    this.setState({
+      itemObjId: this.props.route.params.itemObjId,
+  }, () => {
+
+//load item data
+
+axios
+    .get(constants.ipAddress + "/item/id="+this.state.itemObjId+"")
+    .then(
+      function (response) {
+
+        this.setState({ itemObjId: response.data[0]._id });
+        this.setState({ itemName: response.data[0].itemName });
+        this.setState({ availableQty: response.data[0].availableQty });
+        this.setState({ price: response.data[0].price });
+        this.setState({ itemCategory: response.data[0].category });
+
+        this.setState({
+          supplierId: response.data[0].supplierId
+      }, () => {
+
+          //load supplier data
+
+          axios
+          .get(constants.ipAddress + "/supplier/id="+this.state.supplierId+"")
+          .then(
+            function (response) {
+
+               this.setState({ supplier: response.data[0].name });
+               this.setState({ supplierLogo: response.data[0].supplierLogoURL });
+
+              // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
+            }.bind(this)
+          )
+          .catch(
+            function (error) {
+              console.log("error occurred -" + error);
+            }.bind(this)
+          );
+
+
+          // load supplier data end
+
+      });
+
+
+        // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
+      }.bind(this)
+    )
+    .catch(
+      function (error) {
+        console.log("error occurred -" + error);
+      }.bind(this)
+    );
+
+
+// End
+  })
+
+ 
+
     //last of didmount
     this.setState({ total: this.state.price });
+  }
+
+  handlePlaceOrderBtnClick(){
+
+    if(this.state.itemCategory == 'SPECIAL_APPROVAL' || this.state.total >= this.state.limitPrice){
+      //Need approval
+      axios
+      .post(constants.ipAddress + "/requisition/register",{
+        loggedInUser: this.state.loggedInUser,
+        itemObjId: this.state.itemObjId,
+        supplierId :this.state.supplierId,
+        orderCount: this.state.orderCount,
+        selectedNeedDate:this.state.selectedNeedDate,
+        selectedSite: this.state.selectedSite,
+        total:this.state.total,
+        comment:this.state.comment,
+        itemCategory:this.state.itemCategory,
+        status: "APPROVAL_PENDING",
+        priority:this.state.selectedPriority
+
+      })
+      .then(
+        function (response) {
+
+          if(this.state.itemCategory == 'SPECIAL_APPROVAL' && this.state.total < this.state.limitPrice ){
+            //need approval for special approval item
+            this.props.navigation.navigate("RequestOrOrderScreen",{type:"SPECIAL_APPROVAL_ONLY"});
+    
+          }else if(this.state.itemCategory != 'SPECIAL_APPROVAL' && this.state.total >= this.state.limitPrice ){
+            //need approval for price limit
+            this.props.navigation.navigate("RequestOrOrderScreen",{type:"LIMIT_PRICE_ONLY"});
+    
+          }else if(this.state.itemCategory == 'SPECIAL_APPROVAL' && this.state.total >= this.state.limitPrice ){
+            //need approval for price limit and special approval item
+            this.props.navigation.navigate("RequestOrOrderScreen",{type:"SPECIAL_APPROVAL_AND_LIMIT_PRICE_ONLY"});
+          }   
+
+          // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
+        }.bind(this)
+      )
+      .catch(
+        function (error) {
+          console.log("error occurred -" + error);
+        }.bind(this)
+      );
+
+
+    }else{
+      //No need of approval - place order
+   
+
+      axios
+      .post(constants.ipAddress + "/requisition/register",{
+        loggedInUser: this.state.loggedInUser,
+        itemObjId: this.state.itemObjId,
+        supplierId :this.state.supplierId,
+        orderCount: this.state.orderCount,
+        selectedNeedDate:this.state.selectedNeedDate,
+        selectedSite: this.state.selectedSite,
+        total:this.state.total,
+        comment:this.state.comment,
+        itemCategory:this.state.itemCategory,
+        status: "ORDER_PLACED",
+        priority:this.state.selectedPriority
+
+      })
+      .then(
+        function (response) {
+
+          this.props.navigation.navigate("RequestOrOrderScreen",{type:"ORDERED"});
+          // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
+        }.bind(this)
+      )
+      .catch(
+        function (error) {
+          console.log("error occurred -" + error);
+        }.bind(this)
+      );
+
+
+
+
+
+    }
+
+
+    
+    
+    
+    
+
+
+    console.log("&&&&");
+    console.log(this.state.loggedInUser);
+    console.log(this.state.itemObjId);
+    console.log(this.state.supplierId);
+    console.log(this.state.orderCount);
+    console.log(this.state.selectedNeedDate);
+    console.log(this.state.selectedSite);
+    console.log(this.state.total);
+    console.log(this.state.comment);
+    console.log(this.state.itemCategory);
+    console.log(this.state.limitPrice);
+    
+    console.log("&&&&");
+
+
+  }
+
+  onChangeComment(txt){
+    this.setState({ comment: txt });
   }
 
   showDatePicker() {
     this.setState({ isDatePickerVisible: true });
   }
   handleConfirm(date) {
-    this.setState({ selectedNeedDate: date });
+
+    Moment.locale('en');
+    var dt = date;
+    Moment(dt).format("MMM Do YYYY")
+    var formattedDate = Moment(dt).format('dddd DD MMM YYYY');
+
+
+    this.setState({ selectedNeedDate: formattedDate });
     this.hideDatePicker();
   }
 
@@ -113,7 +335,7 @@ export default class PlaceOrderScreen extends Component {
                   </View>
                   <View style={styles.supplierValueView}>
                     <AppText style={styles.supplierValueTxt}>
-                      {this.state.Item}
+                      {this.state.itemName}
                     </AppText>
                   </View>
                 </View>
@@ -144,26 +366,12 @@ export default class PlaceOrderScreen extends Component {
             </View>
             <View style={styles.constructionSiteRightSide}>
               <View style={styles.pickerContainer}>
-                {/* <Picker
-                selectedValue={this.state.selectedValue}
-                style={{ height: 50, width: 150 }}
-                // onValueChange={(itemValue, itemIndex) =>
-                //   setSelectedValue(itemValue)
-                // }
-              >
-                <Picker.Item label="Australia" value="java" />
-                <Picker.Item label="Canada" value="js" />
-                <Picker.Item label="India" value="js" />
-                <Picker.Item label="New Zealand" value="js" />
-                <Picker.Item label="Singapre" value="js" />
-                <Picker.Item label="USA" value="js" />
-              </Picker> */}
+                
 
                 <Picker
                   style={{ width: 200 }}
                   mode="dropdown"
                   selectedValue={this.state.selectedSite}
-                  onValueChange={() => {}}
                   onValueChange={(itemValue, itemIndex) =>
                     this.setState({ selectedSite: itemValue })
                   }
@@ -209,6 +417,7 @@ export default class PlaceOrderScreen extends Component {
                     iconSize={25}
                     step={1}
                     minValue={1}
+                    maxValue={this.state.availableQty}
                     valueType="real"
                     rounded
                     textColor="#B0228C"
@@ -220,28 +429,62 @@ export default class PlaceOrderScreen extends Component {
               </View>
             </View>
 
-            <View>
-              <AppText>Required Date:</AppText>
-            </View>
 
-            <View>
-              {/*  */}
-              <TouchableOpacity
-                style={{ backgroundColor: "#dddddd" }}
-                onPress={this.showDatePicker}
-              >
-                <AppText style={{ fontSize: 15, height: 40 }}>
-                  {this.state.selectedNeedDate.toString()}
-                </AppText>
-              </TouchableOpacity>
 
-              <DateTimePickerModal
-                isVisible={this.state.isDatePickerVisible}
-                mode="date"
-                onConfirm={this.handleConfirm}
-                onCancel={this.hideDatePicker}
-              />
-              {/*  */}
+
+<View  style={{paddingLeft:10}}>
+<AppText>Required Date:</AppText>
+</View>            
+
+<View  style={{alignItems:"center", paddingTop:7}}>
+<TouchableOpacity 
+            style={{ backgroundColor: "#dddddd",borderRadius:30, width:"80%" }}
+            onPress={this.showDatePicker}
+          >
+            <AppText style={{ fontSize: 16, fontWeight:"bold", marginTop: 10, height: 40, textAlign: 'center' }}>
+              {this.state.selectedNeedDate.toString()}
+            </AppText>
+          </TouchableOpacity>
+
+          <DateTimePickerModal
+            isVisible={this.state.isDatePickerVisible}
+            mode="date"
+            onConfirm={this.handleConfirm}
+            onCancel={this.hideDatePicker}
+          />
+</View>
+
+
+
+
+        
+
+
+<AppText></AppText>
+            <View style={styles.priorityContainer}>
+                    <View style={{width:100, paddingLeft:10, paddingTop:15}}><AppText>Priority</AppText></View>
+                    <View style={{backgroundColor:"#dddddd", borderRadius:30}}>
+
+                        <Picker
+                          style={{ width: 200 }}
+                          mode="dropdown"
+                          selectedValue={this.state.selectedPriority}
+                          onValueChange={(itemValue, itemIndex) =>
+                            this.setState({ selectedPriority: itemValue })
+                          }
+                        >
+                          {Object.keys(this.state.priorityOptions).map((key) => {
+                            return (
+                              <Picker.Item
+                                label={this.state.priorityOptions[key]}
+                                value={key}
+                                key={key}
+                              />
+                            ); //if you have a bunch of keys value pair
+                          })}
+                        </Picker>
+                      
+                    </View>
             </View>
 
             <View style={{ paddingLeft: 10 }}>
@@ -251,7 +494,8 @@ export default class PlaceOrderScreen extends Component {
               <Textarea
                 containerStyle={styles.textareaContainer}
                 style={styles.textarea}
-                // onChangeText={this.onChange}
+                // onChangeText={this.onChangeComment}
+                onChangeText={text => this.onChangeComment(text)}
                 // defaultValue={this.state.text}
                 maxLength={120}
                 placeholder={"Write any comments here..."}
@@ -274,9 +518,7 @@ export default class PlaceOrderScreen extends Component {
 
           <View style={styles.placeOrderBtnView}>
             <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate("RequestOrOrderScreen")
-              }
+              onPress={this.handlePlaceOrderBtnClick}
               style={styles.appButtonContainer}
             >
               <Text style={styles.appButtonText}>Place Order</Text>
@@ -452,4 +694,9 @@ const styles = StyleSheet.create({
   totPriceLeftSide: {
     paddingTop: 5,
   },
+  priorityContainer:{
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingBottom:10
+  }
 });
