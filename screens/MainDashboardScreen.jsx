@@ -8,7 +8,17 @@ import Screen from "../components/Screen";
 export default class MainDashboardScreen extends Component {
   constructor(props) {
     super();
-    this.state = {};
+    this.state = {
+      loggedUser:"aaa"
+    };
+  }
+
+  componentDidMount(){
+    this.setState({ loggedUser: this.props.route.params.loggedUser});
+
+    // console.log(this.props.route.params.loggedUser);
+    // this.props.route.params.itemObjId
+
   }
 
   render() {
@@ -30,6 +40,7 @@ export default class MainDashboardScreen extends Component {
 
                   <DashboardCard
                     navigation={this.props.navigation}
+                    loggedUser={this.state.loggedUser}
                     type={"stocks"}
                     imagePath={
                       "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2Fstocks.png?alt=media&token=4e544238-a416-4df0-8498-71dbbac0c541"
@@ -41,6 +52,7 @@ export default class MainDashboardScreen extends Component {
 
                   <DashboardCard
                     navigation={this.props.navigation}
+                    loggedUser={this.state.loggedUser}
                     type={"quickOrder"}
                     imagePath={
                       "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2FquickOrder.png?alt=media&token=7d592447-02c9-4c74-9828-67f61fb62463"
@@ -56,6 +68,7 @@ export default class MainDashboardScreen extends Component {
 
                   <DashboardCard
                     navigation={this.props.navigation}
+                    loggedUser={this.state.loggedUser}
                     type={"orderStatus"}
                     imagePath={
                       "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2ForderStatus.png?alt=media&token=a575d2ae-1eed-4baf-96b0-64849b57d39b"
@@ -67,6 +80,7 @@ export default class MainDashboardScreen extends Component {
 
                   <DashboardCard
                     navigation={this.props.navigation}
+                    loggedUser={this.state.loggedUser}
                     type={"purchaseHistory"}
                     imagePath={
                       "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2FpurchaseHistory.png?alt=media&token=e9f78cca-7dac-4e3e-946f-2b7ed94cb5c1"
@@ -80,6 +94,7 @@ export default class MainDashboardScreen extends Component {
                 <View>
                   <DashboardCard
                     navigation={this.props.navigation}
+                    loggedUser={this.state.loggedUser}
                     type={"payments"}
                     imagePath={
                       "https://firebasestorage.googleapis.com/v0/b/csseproject-5ca2c.appspot.com/o/Procurement%20System%2FDashboard%2Fpayments.png?alt=media&token=ca2ce526-3007-47a4-99cf-2949d68b095c"

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View, Image } from "react-native";
+import { Text, StyleSheet, View, Image, Alert } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default class DashboardCard extends Component {
@@ -9,17 +9,27 @@ export default class DashboardCard extends Component {
       //   type: this.props.type,
       type: "",
       imagePath: "",
+      loggedUser:""
     };
+    this.imagePressed = this.imagePressed.bind(this);
+
   }
 
   componentDidMount() {
     this.setState({ type: this.props.type });
     this.setState({ imagePath: this.props.imagePath });
+
+    this.setState({
+        loggedUser:this.props.loggedUser  
+    }, () => {
+    
+    });
+
   }
 
   imagePressed = () => {
     if (this.state.type == "stocks") {
-      this.props.navigation.navigate("StocksScreen");
+      this.props.navigation.navigate("StocksScreen",{loggedUser: this.state.loggedUser});
     } else if (this.state.type == "quickOrder") {
       this.props.navigation.navigate("QuickOrderScreen");
     } else if (this.state.type == "orderStatus") {

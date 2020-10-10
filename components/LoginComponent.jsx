@@ -7,6 +7,7 @@ import {
   Button,
   Image,
   Alert,
+ 
 } from "react-native";
 import constants from "../utils/constants";
 import { AwesomeTextInput } from "react-native-awesome-text-input";
@@ -29,6 +30,7 @@ export default class LoginComponent extends Component {
     this.handleUsername = this.handleUsername.bind(this);
     this.handlePassword = this.handlePassword.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
+    // this.storeData = this.storeData(this);
   }
 
   handleUsername = (text) => {
@@ -37,6 +39,17 @@ export default class LoginComponent extends Component {
   handlePassword = (text) => {
     this.setState({ password: text });
   };
+
+  // storeData = async (value) => {
+  //   try {
+  //     await AsyncStorage.setItem('@loggedUser', "value")
+  //   } catch (e) {
+  //     // saving error
+  //     console.log("jfyfvhnvhv",e)
+  //   }
+  // }
+ 
+  
   handleLogin = () => {
     if (this.state.username == "") {
       Alert.alert("Empty", "Please fill username");
@@ -54,7 +67,16 @@ export default class LoginComponent extends Component {
           function (response) {
             this.setState({ isLoading: false });
             if (response.data.isFound == "true") {
-              this.props.navigation.navigate("MainDashboardScreen");
+            console.log(response.data.username);
+
+            //  AsyncStorage.setItem(
+            //   'loggedUser',response.data.username
+            // );
+              
+            // this.storeData("aa");
+
+
+              this.props.navigation.navigate("MainDashboardScreen",{loggedUser: this.state.username});
             } else {
               Alert.alert("User not found", "Please check credentials");
             }
@@ -63,7 +85,8 @@ export default class LoginComponent extends Component {
         .catch(
           function (error) {
             this.setState({ isLoading: false });
-            alert("error occurred -" + error);
+            // alert("error occurred -" + error);
+            console.log(error);
           }.bind(this)
         );
       //

@@ -33,7 +33,7 @@ export default class PlaceOrderScreen extends Component {
       itemName: "",
       supplierId:"",
       supplierLogo:"",
-      loggedInUser:"aaa",
+      loggedInUser:"a",
       options: {
         1: "Colombo",
         2: "Galle",
@@ -57,7 +57,8 @@ export default class PlaceOrderScreen extends Component {
       total: 0,
       comment:"",
       itemCategory:"",
-      limitPrice:0
+      limitPrice:0,
+      loaggedUser:""
     };
 
     this.showDatePicker = this.showDatePicker.bind(this);
@@ -70,6 +71,10 @@ export default class PlaceOrderScreen extends Component {
   }
 
   componentDidMount() {
+
+      this.setState({
+          loggedInUser:this.props.route.params.loggedUser
+      });
 
     // load site locations - start
     axios

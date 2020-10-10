@@ -1,12 +1,14 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View, Image, Alert } from "react-native";
+import { Text, StyleSheet, View, Image, Alert, AppRegistry } from "react-native";
 import Screen from "../components/Screen";
-import PureChart from "react-native-pure-chart";
+// import PureChart from "react-native-pure-chart";
 import AppText from "../common/AppText";
 import AppButton from "../common/AppButton";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import colors from "../config/colors";
 import constants from "../utils/constants";
+// import Pie from 'react-native-pie'
+
 
 const axios = require("axios").default;
 
@@ -29,13 +31,14 @@ export default class ViewPercentageScreen extends Component {
         // 0 value - used
         // 1 value - remaining
       ],
+      loggedUser:""
     };
   }
 
   componentDidMount() {
-
     this.setState({
       itemObjId: this.props.route.params.itemObjId.props.children,
+      loggedUser: this.props.route.params.loggedUser,
   }, () => {
     axios
     .get(constants.ipAddress + "/item/id="+this.state.itemObjId+"")
@@ -110,7 +113,7 @@ export default class ViewPercentageScreen extends Component {
   }
 
   onPressPlaceNewOrder = () => {
-    this.props.navigation.navigate("PlaceOrderScreen",{itemObjId:this.state.itemObjId});
+    this.props.navigation.navigate("PlaceOrderScreen",{itemObjId:this.state.itemObjId, loggedUser:this.state.loggedUser});
   };
 
   render() {
@@ -136,7 +139,7 @@ export default class ViewPercentageScreen extends Component {
               />
             </View>
             <View style={styles.piechartArea}>
-              <PureChart data={this.state.dataSet} type="pie" />
+              {/* <PureChart data={this.state.dataSet} type="pie" /> */}
             </View>
 
             {/* Start Summary */}
