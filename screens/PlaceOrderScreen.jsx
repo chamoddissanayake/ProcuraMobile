@@ -76,7 +76,8 @@ export default class PlaceOrderScreen extends Component {
     .get(constants.ipAddress + "/location/all")
     .then(
       function (response) {
-         this.setState({ limitPrice: response.data[0].limitPrice });
+
+         this.setState({ selectedSite: response.data[0]._id });
       
 
 

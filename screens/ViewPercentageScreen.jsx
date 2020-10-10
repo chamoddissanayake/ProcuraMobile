@@ -24,8 +24,8 @@ export default class ViewPercentageScreen extends Component {
       //   remaining: 50,
 
       dataSet: [
-        { value: 30, label: "Used", color: "red" },
-        { value:70, label: "Remaining", color: "blue" },
+        { value: 0, label: "Used", color: "red" },
+        { value: 1, label: "Remaining", color: "blue" }
         // 0 value - used
         // 1 value - remaining
       ],
@@ -49,13 +49,31 @@ export default class ViewPercentageScreen extends Component {
         this.setState({ itemName: response.data[0].itemName });
         this.setState({ photoPath: response.data[0].photoURL21 });
         this.setState({ capacity: response.data[0].maxQty });
-        
+
         var usedQty = response.data[0].maxQty - response.data[0].availableQty;
         var availQty = response.data[0].availableQty;
 
-        // Alert.alert(usedQty.toString(), response.data[0].maxQty.toString());
+        var usedQtyPresentage= parseInt(usedQty);
+        var availQtyPresentage= parseInt(availQty);
+
+        // Alert.alert(usedQtyPresentage.toString(),availQtyPresentage.toString());
         
-//CHECK - > fill usedQty to state dataset
+        
+        if(usedQtyPresentage>availQtyPresentage){
+          Alert.alert(usedQtyPresentage.toString(),availQtyPresentage.toString());
+
+          //usedQty is less or equal  - first add usedQty and then availQty
+          this.setState({ 
+            dataSet:[{ value: usedQtyPresentage, label: "Used", color: "red" },{ value:availQtyPresentage, label: "Remaining", color: "blue" }]
+          });
+        }else if(usedQtyPresentag<=availQtyPresentage){
+          // Alert.alert(availQtyPresentage.toString(),usedQtyPresentage.toString());
+
+          //usedQty is greater   - first add availQty and then usedQty
+          this.setState({ 
+            dataSet:[{ value: parseInt(availQtyPresentage), label: "Remaining", color: "blue" },{ value: parseInt(usedQtyPresentage), label: "Used", color: "red" }]
+          });
+        }
 
 
 // this.setState(prevState => ({
@@ -92,7 +110,6 @@ export default class ViewPercentageScreen extends Component {
   }
 
   onPressPlaceNewOrder = () => {
-    Alert.alert(this.state.itemObjId);
     this.props.navigation.navigate("PlaceOrderScreen",{itemObjId:this.state.itemObjId});
   };
 
@@ -140,7 +157,7 @@ export default class ViewPercentageScreen extends Component {
                 </View>
                 <View style={styles.summaryRightSide}>
                   <AppText style={styles.valueText}>
-                    {this.state.dataSet[0].value}
+                    {this.state.dataSet[1].value}
                   </AppText>
                 </View>
               </View>
@@ -150,7 +167,7 @@ export default class ViewPercentageScreen extends Component {
                 </View>
                 <View style={styles.summaryRightSide}>
                   <AppText style={styles.valueText}>
-                    {this.state.dataSet[1].value}
+                    {this.state.dataSet[0].value}
                   </AppText>
                 </View>
               </View>

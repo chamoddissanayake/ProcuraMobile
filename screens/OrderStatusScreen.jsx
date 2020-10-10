@@ -13,7 +13,7 @@ export default class OrderStatusScreen extends Component {
     super();
     this.state = {
       allRequisitions:[],
-      // isLoaded:false
+      
     };
   }
 
@@ -29,9 +29,7 @@ export default class OrderStatusScreen extends Component {
         this.setState({
             allRequisitions: response.data 
         }, () => {
-          console.log(this.state.allRequisitions);
-        
-          // this.setState({isLoaded: true});
+          // console.log(this.state.allRequisitions);
         });
 
       }.bind(this)
@@ -57,11 +55,11 @@ export default class OrderStatusScreen extends Component {
           <ScrollView>
 
 
-          {this.state.allRequisitions.map((item) =>
+           {this.state.allRequisitions.map((item) =>
            
-            // {this.state.isLoaded == true && 
+
             <OrderStatusCard 
-            // key={item.id}
+            key={item._id}
             itemId={item.itemId} 
             RequisitionId={item._id} 
             status={item.status} 
@@ -70,13 +68,15 @@ export default class OrderStatusScreen extends Component {
             siteManager={item.siteManagerUsername} 
             price={item.totalPrice} 
             priority={item.priority} />
-            //  }
-          )} 
+          
+          )}  
 
 
 
 
-        {/* <OrderStatusCard 
+
+
+         {/* <OrderStatusCard 
             // key={item.id}
             itemId={"5f7ed6dfa3f08557606c31bd"} 
             RequisitionId={"5f8084d7d44517435849ac8b"} 
@@ -85,7 +85,7 @@ export default class OrderStatusScreen extends Component {
             site={"5f80855bbd407b562e87e3ea"} 
             siteManager={"aaa"} 
             price={4500} 
-            priority={"2"} /> */}
+            priority={"2"} />  */}
 
       
             
