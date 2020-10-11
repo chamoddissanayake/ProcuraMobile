@@ -31,7 +31,7 @@ export default class DashboardCard extends Component {
     if (this.state.type == "stocks") {
       this.props.navigation.navigate("StocksScreen",{loggedUser: this.state.loggedUser});
     } else if (this.state.type == "quickOrder") {
-      this.props.navigation.navigate("QuickOrderScreen");
+      this.props.navigation.navigate("QuickOrderScreen",{loggedUser: this.state.loggedUser});
     } else if (this.state.type == "orderStatus") {
       this.props.navigation.navigate("OrderStatusScreen");
     } else if (this.state.type == "purchaseHistory") {
