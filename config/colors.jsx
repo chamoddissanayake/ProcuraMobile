@@ -20,5 +20,9 @@ export default {
   //
   DELIVERED_COLOR: "#d233ff",
   PARTIALLY_DELIVERED_COLOR: "#ff33c0",
+  // 
+  deleteBtnColor:"#f87070",
+  modifyBtnColor:"#70acf8",
+  placeOrderBtnColor:"#009688"
   
 };

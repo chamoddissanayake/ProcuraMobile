@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, View, Alert } from 'react-native'
 import { cos } from 'react-native-reanimated';
+import FullStatusCard from '../components/FullStatusCard';
 import ApprovedCard from '../components/FullStatusCards/ApprovedCard';
 import InProcessCard from '../components/FullStatusCards/InProcessCard';
 import PendingCard from '../components/FullStatusCards/PendingCard';
@@ -33,11 +34,10 @@ export default class OrderStatusFullScreen extends Component {
                     // IN_PROCESS
                     // APPROVED
                     // REJECTED
-                    console.log(this.state.status);
-                    console.log("aaa");
+                   
                     if(this.state.status=='APPROVAL_PENDING' || this.state.status=='IN_PROCESS' 
                         ||this.state.status=='APPROVED' || this.state.status=='REJECTED' ){
-                            console.log(""+this.state.requisitionId);
+                          
                             axios.get(constants.ipAddress + "/requisition/getById/reqId="+this.state.requisitionId)
                             .then(
                               function (response) {
@@ -82,25 +82,16 @@ export default class OrderStatusFullScreen extends Component {
              IN_PROCESS
              APPROVED
              REJECTED */}
-            {this.state.reqObj.status == 'APPROVAL_PENDING' && 
-                <PendingCard/>
+
+            {(this.state.reqObj.status == 'APPROVAL_PENDING' || this.state.reqObj.status == 'IN_PROCESS' ||
+             this.state.reqObj.status == 'APPROVED'||  this.state.reqObj.status == 'REJECTED') &&
+
+                 <FullStatusCard reqId={this.state.reqObj._id} type ={this.state.reqObj.status}/>
             }
 
-            {this.state.reqObj.status == 'IN_PROCESS' && 
-          
-                <InProcessCard/>
-            }
 
-            {this.state.reqObj.status == 'APPROVED' && 
-          
-                <ApprovedCard/>
-            }
 
-            {this.state.reqObj.status == 'REJECTED' && 
-        
-                <RejectedCard/>
-            
-            }
+
 
             </View>
             </Screen>
