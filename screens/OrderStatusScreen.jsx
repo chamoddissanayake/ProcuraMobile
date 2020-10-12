@@ -20,6 +20,13 @@ export default class OrderStatusScreen extends Component {
      
     };
     this.onPress = this.onPress.bind(this);
+    this.onPressCard = this.onPressCard.bind(this);
+  }
+
+  onPressCard(requisitionId, status){
+
+    // Alert.alert("The requisiond id is: "+requisitionId);
+    this.props.navigation.navigate("OrderStatusFullScreen",{requisitionId:requisitionId, status:status});
   }
 
   onPress(type) {
@@ -347,7 +354,9 @@ export default class OrderStatusScreen extends Component {
 
            {this.state.requisitions.map((item) =>
            
+            <TouchableOpacity onPress={() => this.onPressCard(item._id,item.status)}>
 
+            
             <OrderStatusCard 
             key={item._id}
             itemId={item.itemId} 
@@ -358,6 +367,7 @@ export default class OrderStatusScreen extends Component {
             siteManager={item.siteManagerUsername} 
             price={item.totalPrice} 
             priority={item.priority} />
+            </TouchableOpacity>
           
           )}  
 

@@ -13,6 +13,7 @@ import PaymentsScreen from "../screens/PaymentsScreen";
 import ViewPercentageScreen from "../screens/ViewPercentageScreen";
 import PlaceOrderScreen from "../screens/PlaceOrderScreen";
 import RequestOrOrderScreen from "../screens/RequestOrOrderScreen";
+import OrderStatusFullScreen from "../screens/OrderStatusFullScreen";
 
 const Stack = createStackNavigator();
 
@@ -53,6 +54,11 @@ export default function HomeNavigator() {
       <Stack.Screen
         name={routes.RequestOrOrderScreen}
         component={RequestOrOrderScreen}
+      />
+
+      <Stack.Screen
+        name={routes.OrderStatusFullScreen}
+        component={OrderStatusFullScreen}
       />
     </Stack.Navigator>
   );

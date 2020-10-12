@@ -22,7 +22,8 @@ export default class OrderStatusCard extends Component {
             // 
             itemName:"",
             itemPhoto:"",
-            siteLocation:""
+            siteLocation:"",
+            cardColor:"white",
         };
       }
 
@@ -36,10 +37,28 @@ export default class OrderStatusCard extends Component {
             siteId:this.props.site,
             siteManager:this.props.siteManager,
             price:this.props.price,
-            priority:this.props.priority
+            priority:this.props.priority,
+            cardColor:colors.light
         }, () => {
            //get location by id
 
+
+       
+            if(this.state.status == "APPROVAL_PENDING"){
+            this.setState({cardColor:colors.APPROVAL_PENDING_COLOR});
+            }else if(this.state.status == "APPROVED"){
+                this.setState({cardColor:colors.APPROVED_COLOR});
+            }else if(this.state.status == "REJECTED"){
+                this.setState({cardColor:colors.REJECTED_COLOR});
+            }else if(this.state.status == "IN_PROCESS"){
+                this.setState({cardColor:colors.IN_PROCESS_COLOR});
+            }else if(this.state.status == "ORDER_PLACED"){
+                this.setState({cardColor:colors.ORDER_PLACED_COLOR});
+            }else if(this.state.status == "DELIVERED"){
+                this.setState({cardColor:colors.DELIVERED_COLOR});
+            }else if(this.state.status == "PARTIALLY_DELIVERED"){
+                this.setState({cardColor:colors.PARTIALLY_DELIVERED_COLOR});
+            }
 
            axios
            .get(constants.ipAddress + "/location/id="+this.state.siteId)
@@ -79,11 +98,18 @@ export default class OrderStatusCard extends Component {
         });
     }
 
+    cardStyle = function() {
+        return {
+            backgroundColor: this.state.cardColor,
+            borderRadius: 16,
+        }
+      }
+
     render() {
         return (
             <View style={{padding:10, alignItems:"center"}}>
             <View style={styles.cardShadow}>
-                <View style={styles.cardContainer}>
+                <View style={this.cardStyle()} >
 
                     <View style={styles.namePriorityImageContainer}>
                         <View style={styles.priorityImgContainer}>
@@ -203,7 +229,7 @@ const styles = StyleSheet.create({
         elevation: 3,
        },
        cardContainer: {
-        backgroundColor: colors.light,
+        backgroundColor: "green",
         borderRadius: 16,
        },
 
