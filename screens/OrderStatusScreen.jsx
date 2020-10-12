@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Text, StyleSheet, View, Alert } from "react-native";
-import { ScrollView, TouchableHighlight, TouchableOpacity } from "react-native-gesture-handler";
+import { Text, StyleSheet, View, Alert, Image } from "react-native";
+import { ScrollView, TouchableHighlight, TouchableOpacity  } from "react-native-gesture-handler";
 import AppText from "../common/AppText";
 import OrderStatusCard from "../components/OrderStatusCard";
 import Screen from "../components/Screen";
@@ -14,9 +14,9 @@ export default class OrderStatusScreen extends Component {
   constructor(props) {
     super();
     this.state = {
-      allRequisitions:[],
+      requisitions:[],
        selectedType:"ALL" ,  // APPROVAL_PENDING , APPROVED , REJECTED , IN_PROCESS , ORDER_PLACED , DELIVERED , PARTIALLY_DELIVERED 
-
+        isLoading:false
      
     };
     this.onPress = this.onPress.bind(this);
@@ -26,27 +26,187 @@ export default class OrderStatusScreen extends Component {
 
 
    if( type=='ALL'){
-      this.setState({selectedType:"ALL"});
+
+    this.setState({requisitions:[]});
+    this.setState({isLoading:true});
+     
+      this.setState({
+        selectedType:"ALL"
+      }, () => {
+          //Type all network call start
+            axios.get(constants.ipAddress + "/requisition/all")
+            .then(
+              function (response) {
+                  
+                this.setState({
+                    requisitions: response.data 
+                }, () => {
+                  this.setState({isLoading:false});
+                });
+
+              }.bind(this)
+            )
+            .catch(
+              function (error) {
+                console.log("error occurred -" + error);
+                this.setState({isLoading:false});
+              }.bind(this)
+            );
+          //Type all network call end
+      });
+
    }else if( type=='APPROVAL_PENDING'){
-    this.setState({selectedType:"APPROVAL_PENDING"});
+
+    this.setState({requisitions:[]});
+    this.setState({isLoading:true});
+
+      this.setState({
+          selectedType:"APPROVAL_PENDING"
+      }, () => {
+        //Approval pending network call start
+          axios.get(constants.ipAddress + "/requisition/type=APPROVAL_PENDING")
+          .then(
+            function (response) {
+                
+              this.setState({
+                  requisitions: response.data 
+              }, () => {
+                this.setState({isLoading:false});
+              });
+
+            }.bind(this)
+          )
+          .catch(
+            function (error) {
+              console.log("error occurred -" + error);
+              this.setState({isLoading:false});
+            }.bind(this)
+          );
+
+        //Approval pending network call end
+      });
+
    }else if( type=='APPROVED'){
-    this.setState({selectedType:"APPROVED"});
+
+    this.setState({requisitions:[]});
+    this.setState({isLoading:true});
+      this.setState({
+          selectedType:"APPROVED"
+      }, () => {
+        //approved network call start
+        axios.get(constants.ipAddress + "/requisition/type=APPROVED")
+        .then(
+          function (response) {
+              
+            this.setState({
+                requisitions: response.data 
+            }, () => {
+              this.setState({isLoading:false});
+            });
+
+          }.bind(this)
+        )
+        .catch(
+          function (error) {
+            console.log("error occurred -" + error);
+            this.setState({isLoading:false});
+          }.bind(this)
+        );
+
+      //approved network call end
+      });
+
   }else if( type=='REJECTED'){
-    this.setState({selectedType:"REJECTED"});
+    
+    this.setState({requisitions:[]});
+    this.setState({isLoading:true});
+      this.setState({
+          selectedType:"REJECTED"
+      }, () => {
+          //Rejected network call start
+          axios.get(constants.ipAddress + "/requisition/type=REJECTED")
+          .then(
+            function (response) {
+                
+              this.setState({
+                  requisitions: response.data 
+              }, () => {
+                this.setState({isLoading:false});
+              });
+  
+            }.bind(this)
+          )
+          .catch(
+            function (error) {
+              console.log("error occurred -" + error);
+              this.setState({isLoading:false});
+            }.bind(this)
+          );
+  
+        //Rejected network call end
+      });
+
   }else if( type=='IN_PROCESS'){
-    this.setState({selectedType:"IN_PROCESS"});
+    
+    this.setState({requisitions:[]});
+    this.setState({isLoading:true});
+      this.setState({
+          selectedType:"IN_PROCESS"
+      }, () => {
+          //Rejected network call start
+          axios.get(constants.ipAddress + "/requisition/type=IN_PROCESS")
+          .then(
+            function (response) {
+                
+              this.setState({
+                  requisitions: response.data 
+              }, () => {
+                this.setState({isLoading:false});
+              });
+  
+            }.bind(this)
+          )
+          .catch(
+            function (error) {
+              console.log("error occurred -" + error);
+              this.setState({isLoading:false});
+            }.bind(this)
+          );
+  
+        //Rejected network call end
+      });
+
   }else if( type=='ORDER_PLACED'){
-    this.setState({selectedType:"ORDER_PLACED"});
+    
+      this.setState({
+          selectedType:"ORDER_PLACED"
+      }, () => {
+        Alert.alert(this.state.selectedType);
+      });
+
   }else if( type=='DELIVERED'){
-    this.setState({selectedType:"DELIVERED"});
+    
+      this.setState({
+          selectedType:"DELIVERED"
+      }, () => {
+        Alert.alert(this.state.selectedType);
+      });
+
   } else if( type=='PARTIALLY_DELIVERED'){
-    this.setState({selectedType:"PARTIALLY_DELIVERED"});
+    
+      this.setState({
+          selectedType:"PARTIALLY_DELIVERED"
+      }, () => {
+        Alert.alert(this.state.selectedType);
+      });
   }
 
+  
   }
 
 
   componentDidMount(){
+    this.setState({isLoading:true});
 
     axios
     .get(constants.ipAddress + "/requisition/all")
@@ -54,9 +214,9 @@ export default class OrderStatusScreen extends Component {
       function (response) {
            
         this.setState({
-            allRequisitions: response.data 
+            requisitions: response.data
         }, () => {
-          // console.log(this.state.allRequisitions);
+          this.setState({isLoading:false});
         });
 
       }.bind(this)
@@ -64,6 +224,7 @@ export default class OrderStatusScreen extends Component {
     .catch(
       function (error) {
         console.log("error occurred -" + error);
+        this.setState({isLoading:false});
       }.bind(this)
     );
 
@@ -83,9 +244,10 @@ export default class OrderStatusScreen extends Component {
           <View style={styles.orderStatusTitleView}>
             <AppText style={styles.orderStatusTitleTxt}>Order Status</AppText>
           </View>
-
-
-
+ 
+        
+             
+         
           <View>
             <ScrollView horizontal={true}>
 
@@ -168,6 +330,14 @@ export default class OrderStatusScreen extends Component {
             </ScrollView>
 
            
+            {this.state.isLoading == true &&               
+              <View style={styles.gearLoadingContainer}>
+                  <Image
+                      source={require("../assets/orderStatus/loading.gif")}
+                      style={styles.gearLoadingImg}
+                    />
+              </View> 
+            }
 
           </View>
 
@@ -175,7 +345,7 @@ export default class OrderStatusScreen extends Component {
           <ScrollView>
 
 
-           {this.state.allRequisitions.map((item) =>
+           {this.state.requisitions.map((item) =>
            
 
             <OrderStatusCard 
@@ -232,6 +402,13 @@ const styles = StyleSheet.create({
   singleButton:{
     padding: 10,
 
+  },
+  gearLoadingContainer:{
+    alignItems:"center"
+  },
+  gearLoadingImg:{
+    width:80,
+    height:80
   }
  
 
