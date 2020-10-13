@@ -6,13 +6,23 @@ export default class OrderPlacedComponent extends Component {
   constructor(props) {
     super();
     this.state = {
-      type: "OrderPlaced",
+      type: "",
       loaded: false,
-      orderID: "#4355674",
+      referenceID: "",
     };
   }
 
   componentDidMount() {
+
+    console.log("4444");
+    console.log(this.props);
+    console.log("4444");
+
+    this.setState({
+      type : this.props.type,
+      referenceID : this.props.refId
+    });
+
     this.timeoutHandle = setTimeout(() => {
       this.setState({ loaded: true });
     }, 1000);
@@ -56,7 +66,7 @@ export default class OrderPlacedComponent extends Component {
 
         <View style={styles.OrderIDContainer}>
           <AppText style={styles.OrdIDTitletxt}>Reference ID: </AppText>
-          <AppText style={styles.ordIDValuetxt}>{this.state.orderID}</AppText>
+          <AppText style={styles.ordIDValuetxt}>{this.state.referenceID}</AppText>
         </View>
       </View>
     );
@@ -108,9 +118,10 @@ const styles = StyleSheet.create({
   },
 
   OrderIDContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "flex-start",
+    // flexDirection: "row",
+    // justifyContent: "space-around",
+    // alignItems: "flex-start",
+    alignItems:"center",
     padding: 30,
   },
   OrdIDTitletxt: {

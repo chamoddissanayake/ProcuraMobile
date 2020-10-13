@@ -10,22 +10,43 @@ export default class RequestOrOrderScreen extends Component {
     super();
     this.state = {
       //   type: "OrderPlaced",
-      type: "SentForApprovel",
+      type: "",
       symbolBack: "<< ",
       symbolNext: " >>",
+      refId:"",
     };
+  }
+
+  componentDidMount(){
+    console.log("**11^^");
+    if(this.props.route.params.type!= undefined){
+      console.log(this.props.route.params.type);
+      if(this.props.route.params.type == 'ORDERED'){
+          this.setState({type:"OrderPlaced"});
+      }else if
+      (this.props.route.params.type == 'SPECIAL_APPROVAL_ONLY' ||  this.props.route.params.type == 'LIMIT_PRICE_ONLY' || 
+      this.props.route.params.type == 'SPECIAL_APPROVAL_AND_LIMIT_PRICE_ONLY'){
+          this.setState({type:"SentForApprovel"});
+      }
+
+    }
+    console.log("**11^^");
   }
 
   render() {
     return (
       <Screen navigation={this.props.navigation}>
         <View style={styles.fullContainer}>
+
+        {this.state.type != "" && 
           <View>
-            {this.state.type == "OrderPlaced" && <OrderPlacedComponent />}
+            {this.state.type == "OrderPlaced" && <OrderPlacedComponent type={this.props.route.params.type} refId={this.props.route.params.refId} />}
             {this.state.type == "SentForApprovel" && (
-              <RequisitionSentForApprovalComponent />
+              <RequisitionSentForApprovalComponent type={this.props.route.params.type} refId={this.props.route.params.refId} />
             )}
           </View>
+        }
+
 
           {/*  */}
           <View style={styles.btnView}>

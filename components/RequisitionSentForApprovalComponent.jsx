@@ -6,14 +6,22 @@ export default class RequisitionSentForApprovalComponent extends Component {
   constructor(props) {
     super();
     this.state = {
-      type: "SentForApprovel",
+      type: "",
       maxPriceLimit: 100000,
       loaded: false,
-      referenceID: "#123456",
+      referenceID: "",
+
     };
   }
 
   componentDidMount() {
+
+    this.setState({
+      type : this.props.type,
+      referenceID : this.props.refId
+    });
+
+
     this.timeoutHandle = setTimeout(() => {
       this.setState({ loaded: true });
     }, 1000);
@@ -23,10 +31,35 @@ export default class RequisitionSentForApprovalComponent extends Component {
     return (
       <View style={styles.requisitionContainer}>
         <View style={styles.requisitionMessageContainer}>
+
+        {this.state.type == 'SPECIAL_APPROVAL_ONLY' && 
           <AppText style={styles.requisitionMessageTxt}>
-            The price is greater than Rs. {this.state.maxPriceLimit}/= and need
-            special approval
+          You have selected an item which needs a special approval. The approval has been sent
           </AppText>
+        }
+
+
+        {this.state.type == 'LIMIT_PRICE_ONLY' && 
+          <AppText style={styles.requisitionMessageTxt}>
+            To total price is above the limit of  Rs. {this.state.maxPriceLimit}/= and approvel has been sent
+          </AppText>
+        }
+
+
+        {this.state.type == 'SPECIAL_APPROVAL_AND_LIMIT_PRICE_ONLY' && 
+            <AppText style={styles.requisitionMessageTxt}>
+              The total price is greater {this.state.maxPriceLimit}/= and the selected item needs special approvel. The approval has been sent
+            </AppText>
+        }
+
+          
+        
+        
+        
+
+       
+        
+
         </View>
         <View style={styles.tickNoticeContainer}>
           <View style={styles.tickNoticeLeftSide}>
@@ -108,9 +141,7 @@ const styles = StyleSheet.create({
   },
 
   referenceIDContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "flex-start",
+    alignItems:"center",
     padding: 30,
   },
   refIDTitletxt: {

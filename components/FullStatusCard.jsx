@@ -52,6 +52,8 @@ export default class FullStatusCard extends Component {
 
       onPressPlace= () => {
         Alert.alert("Order Place pressed");
+        //this.state.reqId
+        // placeOrder endpoint
         
       };
 

@@ -58,7 +58,9 @@ export default class PlaceOrderScreen extends Component {
       comment:"",
       itemCategory:"",
       limitPrice:0,
-      loaggedUser:""
+      loaggedUser:"",
+      // 
+      referenceID:""
     };
 
     this.showDatePicker = this.showDatePicker.bind(this);
@@ -184,6 +186,11 @@ axios
 
   handlePlaceOrderBtnClick(){
 
+    console.log("!!!");
+    console.log(this.state.itemCategory);
+    console.log(this.state.total +">="+ this.state.limitPrice);
+    console.log("!!!");  
+
     if(this.state.itemCategory == 'SPECIAL_APPROVAL' || this.state.total >= this.state.limitPrice){
       //Need approval
       axios
@@ -204,19 +211,29 @@ axios
       .then(
         function (response) {
 
-          if(this.state.itemCategory == 'SPECIAL_APPROVAL' && this.state.total < this.state.limitPrice ){
-            //need approval for special approval item
-            this.props.navigation.navigate("RequestOrOrderScreen",{type:"SPECIAL_APPROVAL_ONLY"});
-    
-          }else if(this.state.itemCategory != 'SPECIAL_APPROVAL' && this.state.total >= this.state.limitPrice ){
-            //need approval for price limit
-            this.props.navigation.navigate("RequestOrOrderScreen",{type:"LIMIT_PRICE_ONLY"});
-    
-          }else if(this.state.itemCategory == 'SPECIAL_APPROVAL' && this.state.total >= this.state.limitPrice ){
-            //need approval for price limit and special approval item
-            this.props.navigation.navigate("RequestOrOrderScreen",{type:"SPECIAL_APPROVAL_AND_LIMIT_PRICE_ONLY"});
-          }   
+          this.setState({ 
+              referenceID:response.data.ops[0]._id
+          }, () => {
+             
+            if(this.state.itemCategory == 'SPECIAL_APPROVAL' && this.state.total < this.state.limitPrice ){
+              //need approval for special approval item
+              this.props.navigation.navigate("RequestOrOrderScreen",{type:"SPECIAL_APPROVAL_ONLY",refId:this.state.referenceID});
+      
+            }else if(this.state.itemCategory != 'SPECIAL_APPROVAL' && this.state.total >= this.state.limitPrice ){
+              //need approval for price limit
+              this.props.navigation.navigate("RequestOrOrderScreen",{type:"LIMIT_PRICE_ONLY",refId:this.state.referenceID});
+      
+            }else if(this.state.itemCategory == 'SPECIAL_APPROVAL' && this.state.total >= this.state.limitPrice ){
+              //need approval for price limit and special approval item
+              this.props.navigation.navigate("RequestOrOrderScreen",{type:"SPECIAL_APPROVAL_AND_LIMIT_PRICE_ONLY",refId:this.state.referenceID});
+            }   
+  
 
+
+          });
+
+
+        
           // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
         }.bind(this)
       )
@@ -229,7 +246,7 @@ axios
 
     }else{
       //No need of approval - place order
-   
+      console.log("inside else block");
 
       axios
       .post(constants.ipAddress + "/requisition/register",{
@@ -249,8 +266,11 @@ axios
       .then(
         function (response) {
 
-          this.props.navigation.navigate("RequestOrOrderScreen",{type:"ORDERED"});
-          // response.data[0]._id availableQty  category  itemName  maxQty  photoURL11  photoURL21  price  supplierId  weightPerItem
+          this.setState({ 
+            referenceID:response.data.ops[0]._id
+        }, () => {
+          this.props.navigation.navigate("RequestOrOrderScreen",{type:"ORDERED", refId:this.state.referenceID} );
+        });
         }.bind(this)
       )
       .catch(
@@ -258,26 +278,7 @@ axios
           console.log("error occurred -" + error);
         }.bind(this)
       );
-
-
     }
-
-
-
-    console.log("&&&&");
-    console.log(this.state.loggedInUser);
-    console.log(this.state.itemObjId);
-    console.log(this.state.supplierId);
-    console.log(this.state.orderCount);
-    console.log(this.state.selectedNeedDate);
-    console.log(this.state.selectedSite);
-    console.log(this.state.total);
-    console.log(this.state.comment);
-    console.log(this.state.itemCategory);
-    console.log(this.state.limitPrice);
-    
-    console.log("&&&&");
-
 
   }
 
