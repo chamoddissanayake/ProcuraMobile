@@ -4,6 +4,8 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import AppText from '../common/AppText';
 import StatusCommonCard from './StatusCommonCard';
 import colors from "../config/colors";
+import constants from "../utils/constants";
+const axios = require("axios").default;
 
 export default class FullStatusCard extends Component {
     
@@ -28,8 +30,23 @@ export default class FullStatusCard extends Component {
     }
 
     onPressDelete = () => {
-        Alert.alert("Delete pressed");
+
+        axios.delete(constants.ipAddress + "/requisition/id="+this.state.reqId)
+        .then(
+            function (response) {
+              Alert.alert("Requisition deleted successfully.");
+              this.props.navigation.navigate("MainDashboardScreen");
+              
+            }.bind(this)
+        )
+        .catch(
+            function (error) {
+            console.log("error occurred -" + error);
+            this.setState({isLoading:false});
+            }.bind(this)
+        );
         
+
       };
 
       onPressPlace= () => {
@@ -70,7 +87,7 @@ export default class FullStatusCard extends Component {
                     <AppText>{this.state.reqId}</AppText>
                 </View>
 
-                <StatusCommonCard/>
+                <StatusCommonCard reqId={this.state.reqId}/>
             </ScrollView>
           
             {this.state.type == 'APPROVAL_PENDING'  &&

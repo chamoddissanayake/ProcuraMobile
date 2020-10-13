@@ -2,10 +2,6 @@ import React, { Component } from 'react'
 import { Text, StyleSheet, View, Alert } from 'react-native'
 import { cos } from 'react-native-reanimated';
 import FullStatusCard from '../components/FullStatusCard';
-import ApprovedCard from '../components/FullStatusCards/ApprovedCard';
-import InProcessCard from '../components/FullStatusCards/InProcessCard';
-import PendingCard from '../components/FullStatusCards/PendingCard';
-import RejectedCard from '../components/FullStatusCards/RejectedCard';
 import Screen from "../components/Screen";
 const axios = require("axios").default;
 import constants from "../utils/constants";
@@ -64,8 +60,6 @@ export default class OrderStatusFullScreen extends Component {
 
                     }
 
-
-
             //network call for fetching data - end
         });
         
@@ -86,11 +80,8 @@ export default class OrderStatusFullScreen extends Component {
             {(this.state.reqObj.status == 'APPROVAL_PENDING' || this.state.reqObj.status == 'IN_PROCESS' ||
              this.state.reqObj.status == 'APPROVED'||  this.state.reqObj.status == 'REJECTED') &&
 
-                 <FullStatusCard reqId={this.state.reqObj._id} type ={this.state.reqObj.status}/>
+                 <FullStatusCard  navigation={this.props.navigation} reqId={this.state.reqObj._id} type ={this.state.reqObj.status}/>
             }
-
-
-
 
 
             </View>
