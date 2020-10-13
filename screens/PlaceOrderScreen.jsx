@@ -426,7 +426,7 @@ axios
               <View>
                 <View>
                   <NumericInput
-                    initValue={1}
+                    initValue={this.state.orderCount}
                     onChange={(value) => {
                       this.setState({ orderCount: value });
                       var temp = this.state.price * value;
