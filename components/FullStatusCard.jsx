@@ -14,7 +14,8 @@ export default class FullStatusCard extends Component {
         this.state = {
             reqId:"",
             type:"",
-            reqObj:{}
+            reqObj:{},
+            loaded:false
         };
     
     }
@@ -25,7 +26,7 @@ export default class FullStatusCard extends Component {
             reqId:this.props.reqId, 
             type:this.props.type
         }, () => {
-           
+          this.setState({loaded:true});
         });
     }
 
@@ -87,7 +88,13 @@ export default class FullStatusCard extends Component {
                     <AppText>{this.state.reqId}</AppText>
                 </View>
 
-                <StatusCommonCard reqId={this.state.reqId}/>
+                
+
+                {this.state.loaded == true &&                   
+                    <StatusCommonCard reqId={this.state.reqId}/>
+                }
+
+
             </ScrollView>
           
             {this.state.type == 'APPROVAL_PENDING'  &&

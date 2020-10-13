@@ -63,7 +63,7 @@ export default class ViewPercentageScreen extends Component {
         
         
         if(usedQtyPresentage>availQtyPresentage){
-          Alert.alert(usedQtyPresentage.toString(),availQtyPresentage.toString());
+          // Alert.alert(usedQtyPresentage.toString(),availQtyPresentage.toString());
 
           //usedQty is less or equal  - first add usedQty and then availQty
           this.setState({ 
