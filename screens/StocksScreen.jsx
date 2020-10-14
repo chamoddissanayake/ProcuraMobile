@@ -43,11 +43,16 @@ export default class StocksScreen extends Component {
    //this.setState({ loggedUser: this.props.route.params.loggedUser});
 
     console.log(this.props);
-     this.setState({
-       loggedUser: this.props.route.params.loggedUser
-   }, () => {
 
-   });
+      if(this.props.route.params == undefined){
+        this.setState({loggedUser: "aaa"});
+      }else{
+        this.setState({
+          loggedUser: this.props.route.params.loggedUser
+         }, () => {
+         });
+      }
+      
 
 
     axios

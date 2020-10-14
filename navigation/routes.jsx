@@ -11,4 +11,6 @@ export default Object.freeze({
   PlaceOrderScreen: "PlaceOrderScreen",
   RequestOrOrderScreen: "RequestOrOrderScreen",
   OrderStatusFullScreen: "OrderStatusFullScreen",
+  ReceivedScreen:"ReceivedScreen",
+  DeliveredScreen:"DeliveredScreen",
 });

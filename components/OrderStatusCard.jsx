@@ -74,9 +74,7 @@ export default class OrderStatusCard extends Component {
                console.log("error occurred -" + error);
              }.bind(this)
            );
-//+this.state.siteId
-           //get get itemname and location
-//+this.state.itemId
+
            axios
            .get(constants.ipAddress + "/item/id="+this.state.itemId)
            .then(

@@ -14,6 +14,8 @@ import ViewPercentageScreen from "../screens/ViewPercentageScreen";
 import PlaceOrderScreen from "../screens/PlaceOrderScreen";
 import RequestOrOrderScreen from "../screens/RequestOrOrderScreen";
 import OrderStatusFullScreen from "../screens/OrderStatusFullScreen";
+import ReceivedScreen from "../screens/ReceivedScreen";
+import DeliveredScreen from "../screens/DeliveredScreen";
 
 const Stack = createStackNavigator();
 
@@ -60,6 +62,17 @@ export default function HomeNavigator() {
         name={routes.OrderStatusFullScreen}
         component={OrderStatusFullScreen}
       />
+
+      <Stack.Screen
+        name={routes.ReceivedScreen}
+        component={ReceivedScreen}
+      />
+      
+      <Stack.Screen
+        name={routes.DeliveredScreen}
+        component={DeliveredScreen}
+      />
+
     </Stack.Navigator>
   );
 }

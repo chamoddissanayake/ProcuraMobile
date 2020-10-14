@@ -61,6 +61,8 @@ export default class StatusCommonCard extends Component {
                             this.setState({cardColor: colors.REJECTED_COLOR});
                         }else if (this.state.reqObj.status =='IN_PROCESS'){
                             this.setState({cardColor: colors.IN_PROCESS_COLOR});
+                        }else if (this.state.reqObj.status =='ORDER_PLACED'){
+                            this.setState({cardColor: colors.ORDER_PLACED_COLOR});
                         }
 
                         // ### 

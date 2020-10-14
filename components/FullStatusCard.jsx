@@ -15,7 +15,8 @@ export default class FullStatusCard extends Component {
             reqId:"",
             type:"",
             reqObj:{},
-            loaded:false
+            loaded:false,
+            orderId:""
         };
     
     }
@@ -27,8 +28,41 @@ export default class FullStatusCard extends Component {
             type:this.props.type
         }, () => {
           this.setState({loaded:true});
+
+          if(this.state.type=='ORDER_PLACED'){
+            //load order id - start
+                    axios.get(constants.ipAddress + "/order/req/id="+this.state.reqId+'')
+                  .then(
+                      function (response) {
+                          this.setState({
+                            orderId :response.data[0]._id
+                          });
+
+                        this.setState({
+                          orderId :response.data[0]._id
+                        }, () => {
+
+                        });
+
+                    
+                      }.bind(this)
+                  ).catch(
+                      function (error) {
+                      console.log("error occurred -" + error);
+                      this.setState({isLoading:false});
+                      }.bind(this)
+                  );
+            //load order id - end
+          }
+         
+
+
         });
     }
+    onPressOrderPlaced= () => {
+        // Alert.alert("Order Placed"+ this.state.orderId);      
+        this.props.navigation.navigate("ReceivedScreen",{orderId: this.state.orderId, reqId: this.state.reqId});
+    };
 
     onPressDelete = () => {
 
@@ -54,7 +88,23 @@ export default class FullStatusCard extends Component {
         Alert.alert("Order Place pressed");
         //this.state.reqId
         // placeOrder endpoint
-        
+      
+        axios.post(constants.ipAddress + "/requisition/placeApprovedOrder", {reqId:this.state.reqId})
+        .then(
+          function (response) {
+            console.log(response.data);
+            this.props.navigation.navigate("MainDashboardScreen");
+
+          }.bind(this)
+        )
+        .catch(
+          function (error) {
+            // alert("error occurred -" + error);
+            console.log(error);
+          }.bind(this)
+        );
+
+        // Onpress place order end
       };
 
       onPressModify= () => {
@@ -81,6 +131,9 @@ export default class FullStatusCard extends Component {
 
                 {this.state.type == 'REJECTED'  &&
                     <AppText style={styles.titletxt}>Rejected</AppText>
+                }
+                {this.state.type == 'ORDER_PLACED'  &&
+                    <AppText style={styles.titletxt}>Order Placed</AppText>
                 }
             </View>
  
@@ -141,6 +194,19 @@ export default class FullStatusCard extends Component {
                  style={styles.modifyButtonContainer}
                >
                  <Text style={styles.modifyButtonText}>Modify</Text>
+               </TouchableOpacity>
+
+                </View>
+            }
+
+            {this.state.type == 'ORDER_PLACED'  &&
+                <View style={styles.BtnContainer}>
+      
+               <TouchableOpacity
+                 onPress={this.onPressOrderPlaced}
+                 style={styles.modifyButtonContainer}
+               >
+                 <Text style={styles.modifyButtonText}>Received</Text>
                </TouchableOpacity>
 
                 </View>

@@ -32,7 +32,7 @@ export default class OrderStatusFullScreen extends Component {
                     // REJECTED
                    
                     if(this.state.status=='APPROVAL_PENDING' || this.state.status=='IN_PROCESS' 
-                        ||this.state.status=='APPROVED' || this.state.status=='REJECTED' ){
+                        ||this.state.status=='APPROVED' || this.state.status=='REJECTED' || this.state.status=='ORDER_PLACED' ){
                           
                             axios.get(constants.ipAddress + "/requisition/getById/reqId="+this.state.requisitionId)
                             .then(
@@ -78,7 +78,7 @@ export default class OrderStatusFullScreen extends Component {
              REJECTED */}
 
             {(this.state.reqObj.status == 'APPROVAL_PENDING' || this.state.reqObj.status == 'IN_PROCESS' ||
-             this.state.reqObj.status == 'APPROVED'||  this.state.reqObj.status == 'REJECTED') &&
+             this.state.reqObj.status == 'APPROVED'||  this.state.reqObj.status == 'REJECTED' || this.state.reqObj.status == 'ORDER_PLACED'  ) &&
 
                  <FullStatusCard  navigation={this.props.navigation} reqId={this.state.reqObj._id} type ={this.state.reqObj.status}/>
             }

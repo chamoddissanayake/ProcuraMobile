@@ -16,7 +16,8 @@ export default class OrderStatusScreen extends Component {
     this.state = {
       requisitions:[],
        selectedType:"ALL" ,  // APPROVAL_PENDING , APPROVED , REJECTED , IN_PROCESS , ORDER_PLACED , DELIVERED , PARTIALLY_DELIVERED 
-        isLoading:false
+        isLoading:false,
+        orders:[]
      
     };
     this.onPress = this.onPress.bind(this);
@@ -26,7 +27,19 @@ export default class OrderStatusScreen extends Component {
   onPressCard(requisitionId, status){
 
     // Alert.alert("The requisiond id is: "+requisitionId);
-    this.props.navigation.navigate("OrderStatusFullScreen",{requisitionId:requisitionId, status:status});
+    if(status == "APPROVAL_PENDING" || status == "APPROVED" || status =="REJECTED" || status =="IN_PROCESS" || status == "ORDER_PLACED"){
+      this.props.navigation.navigate("OrderStatusFullScreen",{requisitionId:requisitionId, status:status});
+    }else if(status == "DELIVERED"){
+      this.props.navigation.navigate("DeliveredScreen",{requisitionId:requisitionId, status:status});
+    }else if(status == "PARTIALLY_DELIVERED"){
+
+    }
+
+    
+    
+    
+
+
   }
 
   onPress(type) {
@@ -184,28 +197,106 @@ export default class OrderStatusScreen extends Component {
       });
 
   }else if( type=='ORDER_PLACED'){
-    
-      this.setState({
+  
+
+      this.setState({requisitions:[]});
+      this.setState({isLoading:true});
+        this.setState({
           selectedType:"ORDER_PLACED"
-      }, () => {
-        Alert.alert(this.state.selectedType);
-      });
+        }, () => {
+            //order placed network call start
+            axios.get(constants.ipAddress + "/requisition/type=ORDER_PLACED")
+            .then(
+              function (response) {
+                  
+                this.setState({
+                    requisitions: response.data 
+                }, () => {
+                  this.setState({isLoading:false});
+                });
+    
+              }.bind(this)
+            )
+            .catch(
+              function (error) {
+                console.log("error occurred -" + error);
+                this.setState({isLoading:false});
+              }.bind(this)
+            );
+    
+          //order placed call end
+        });
+
+
+
+
 
   }else if( type=='DELIVERED'){
-    
-      this.setState({
+
+
+      this.setState({requisitions:[]});
+      this.setState({isLoading:true});
+        this.setState({
           selectedType:"DELIVERED"
-      }, () => {
-        Alert.alert(this.state.selectedType);
-      });
+        }, () => {
+            //delivered network call start
+            axios.get(constants.ipAddress + "/requisition/type=DELIVERED")
+            .then(
+              function (response) {
+                  
+                this.setState({
+                    requisitions: response.data 
+                }, () => {
+                  this.setState({isLoading:false});
+                });
+    
+              }.bind(this)
+            )
+            .catch(
+              function (error) {
+                console.log("error occurred -" + error);
+                this.setState({isLoading:false});
+              }.bind(this)
+            );
+    
+          //delivered network call end
+        });
 
   } else if( type=='PARTIALLY_DELIVERED'){
     
+    this.setState({requisitions:[]});
+    this.setState({isLoading:true});
       this.setState({
-          selectedType:"PARTIALLY_DELIVERED"
+        selectedType:"PARTIALLY_DELIVERED"
       }, () => {
-        Alert.alert(this.state.selectedType);
+          //delivered network call start
+          axios.get(constants.ipAddress + "/requisition/type=PARTIALLY_DELIVERED")
+          .then(
+            function (response) {
+                
+              this.setState({
+                  requisitions: response.data 
+              }, () => {
+                this.setState({isLoading:false});
+              });
+  
+            }.bind(this)
+          )
+          .catch(
+            function (error) {
+              console.log("error occurred -" + error);
+              this.setState({isLoading:false});
+            }.bind(this)
+          );
+  
+        //delivered network call end
       });
+
+      // this.setState({
+      //     selectedType:"PARTIALLY_DELIVERED"
+      // }, () => {
+      //   Alert.alert(this.state.selectedType);
+      // });
   }
 
   

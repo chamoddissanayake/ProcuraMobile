@@ -48,7 +48,7 @@ export default function Header({ navigation, title, goBack }) {
           {title ? title : <React.Fragment>Procura</React.Fragment>}
         </AppText>
       </View>
-      <View style={styles.navSideIcons}>
+      {/* <View style={styles.navSideIcons}>
         <MaterialCommunityIcons
           name="chat-outline"
           size={iconSize}
@@ -56,7 +56,7 @@ export default function Header({ navigation, title, goBack }) {
         />
         <AntDesign name="bells" size={iconSize} color={iconColor} />
         <Entypo name="dots-three-vertical" size={iconSize} color={iconColor} />
-      </View>
+      </View> */}
     </View>
   );
 }

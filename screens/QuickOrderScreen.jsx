@@ -29,12 +29,16 @@ this.props.navigation.navigate("PlaceOrderScreen",{itemObjId:txt, loggedUser:"aa
 
     this.setState({ isloading: true });
 
+    if(this.props.route.params == undefined){
+      this.setState({loggedUser:"aaa"});
+    }else{
+      this.setState({
+        loggedUser: this.props.route.params.loggedUser
+      }, () => {
+          console.log(this.state.loggedUser);
+      });
+    }
 
-    this.setState({
-      loggedUser: this.props.route.params.loggedUser
-    }, () => {
-        console.log(this.state.loggedUser);
-    });
 
     axios
     .get(constants.ipAddress + "/item/")
