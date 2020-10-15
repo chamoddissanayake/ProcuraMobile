@@ -32,7 +32,7 @@ export default class OrderStatusScreen extends Component {
     }else if(status == "DELIVERED"){
       this.props.navigation.navigate("DeliveredScreen",{requisitionId:requisitionId, status:status});
     }else if(status == "PARTIALLY_DELIVERED"){
-
+      this.props.navigation.navigate("PartiallyDeliveredScreen",{requisitionId:requisitionId, status:status});
     }
 
     
@@ -445,7 +445,7 @@ export default class OrderStatusScreen extends Component {
 
            {this.state.requisitions.map((item) =>
            
-            <TouchableOpacity onPress={() => this.onPressCard(item._id,item.status)}>
+            <TouchableOpacity key={item._id} onPress={() => this.onPressCard(item._id,item.status)}>
 
             
             <OrderStatusCard 

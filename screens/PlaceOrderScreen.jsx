@@ -139,7 +139,7 @@ axios
         this.setState({
           supplierId: response.data[0].supplierId
       }, () => {
-
+          this.setState({total:this.state.price});
           //load supplier data
 
           axios
@@ -437,7 +437,7 @@ axios
                     iconSize={25}
                     step={1}
                     minValue={1}
-                    maxValue={this.state.availableQty}
+                    // maxValue={this.state.availableQty}
                     valueType="real"
                     rounded
                     textColor="#B0228C"

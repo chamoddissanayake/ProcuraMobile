@@ -13,4 +13,5 @@ export default Object.freeze({
   OrderStatusFullScreen: "OrderStatusFullScreen",
   ReceivedScreen:"ReceivedScreen",
   DeliveredScreen:"DeliveredScreen",
+  PartiallyDeliveredScreen:"PartiallyDeliveredScreen"
 });

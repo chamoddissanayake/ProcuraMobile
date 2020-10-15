@@ -21,13 +21,13 @@ export default class ViewPercentageScreen extends Component {
       itemObjId: "",
       itemName: "",
       photoPath:"",
-      capacity: 100,
+      capacity: 0,
       //   used: 0,
       //   remaining: 50,
 
       dataSet: [
         { value: 0, label: "Used", color: "red" },
-        { value: 1, label: "Remaining", color: "blue" }
+        { value: 0, label: "Remaining", color: "blue" }
         // 0 value - used
         // 1 value - remaining
       ],
@@ -177,14 +177,14 @@ export default class ViewPercentageScreen extends Component {
             </View>
             {/* End of summary */}
 
-            <View style={styles.centerBtns}>
+            {/* <View style={styles.centerBtns}>
               <TouchableOpacity
                 //   onPress={onPress}
                 style={styles.appButtonContainer}
               >
                 <Text style={styles.appButtonText}>View Previous Orders</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             <View style={styles.centerBtns}>
               <TouchableOpacity

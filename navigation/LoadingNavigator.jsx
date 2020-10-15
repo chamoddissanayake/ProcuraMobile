@@ -16,6 +16,8 @@ import RequestOrOrderScreen from "../screens/RequestOrOrderScreen";
 import OrderStatusFullScreen from "../screens/OrderStatusFullScreen";
 import ReceivedScreen from "../screens/ReceivedScreen";
 import DeliveredScreen from "../screens/DeliveredScreen";
+import PartiallyDeliveredScreen from "../screens/PartiallyDeliveredScreen";
+
 
 const Stack = createStackNavigator();
 
@@ -71,6 +73,11 @@ export default function HomeNavigator() {
       <Stack.Screen
         name={routes.DeliveredScreen}
         component={DeliveredScreen}
+      />
+
+      <Stack.Screen
+        name={routes.PartiallyDeliveredScreen}
+        component={PartiallyDeliveredScreen}
       />
 
     </Stack.Navigator>
