@@ -232,7 +232,7 @@ if(this.state.proof ==""){
   
             console.log("Received Response");
             console.log(response.data);
-
+            Alert.alert("Status updated Successfully");
             this.props.navigation.navigate("MainDashboardScreen");
         //   this.setState({
         //     orderObj :response.data[0]

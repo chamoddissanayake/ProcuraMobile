@@ -17,7 +17,8 @@ export default class FullStatusCard extends Component {
             reqObj:{},
             loaded:false,
             orderId:"",
-            loadingDelete:false
+            loadingDelete:false,
+            approveloading:false
         };
     
     }
@@ -90,12 +91,14 @@ export default class FullStatusCard extends Component {
 
       onPressPlace= () => {
 
+        this.setState({approveloading:true});
         //this.state.reqId
         // placeOrder endpoint
       
         axios.post(constants.ipAddress + "/requisition/placeApprovedOrder", {reqId:this.state.reqId})
         .then(
           function (response) {
+            this.setState({approveloading:false});
             console.log(response.data);
             this.props.navigation.navigate("MainDashboardScreen");
 
@@ -103,6 +106,7 @@ export default class FullStatusCard extends Component {
         )
         .catch(
           function (error) {
+            this.setState({approveloading:false});
             // alert("error occurred -" + error);
             console.log(error);
           }.bind(this)
@@ -189,6 +193,15 @@ export default class FullStatusCard extends Component {
                >
                  <Text style={styles.placeOrderButtonText}>Place Order</Text>
                </TouchableOpacity>
+                <View style={{paddingTop:15}}>
+                    {this.state.approveloading == true && 
+                          <Image
+                          source={require("../assets/loading/gear.gif")}
+                          style={{width:40, height:40,paddingTop:30}}
+                          />
+                    }
+                </View>
+
             </View>
             }
 
@@ -201,12 +214,12 @@ export default class FullStatusCard extends Component {
                  <Text style={styles.deleteButtonText}>Delete</Text>
                </TouchableOpacity>
                 <AppText></AppText>
-               <TouchableOpacity
+               {/* <TouchableOpacity
                  onPress={this.onPressModify}
                  style={styles.modifyButtonContainer}
                >
                  <Text style={styles.modifyButtonText}>Modify</Text>
-               </TouchableOpacity>
+               </TouchableOpacity> */}
 
                 </View>
             }

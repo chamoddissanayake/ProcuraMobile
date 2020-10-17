@@ -440,7 +440,7 @@ export default class OrderStatusScreen extends Component {
 
             </ScrollView>
 
-           
+
             {this.state.isLoading == true &&               
               <View style={styles.gearLoadingContainer}>
                   <Image
@@ -450,18 +450,16 @@ export default class OrderStatusScreen extends Component {
               </View> 
             }
 
+           
+
           </View>
 
 
-          <ScrollView>
+          <ScrollView  >
 
 
            {this.state.requisitions.map((item) =>
-           
-
-          //  {(item.status=='APPROVAL_PENDING' || item.status=='APPROVED' || item.status=='REJECTED' || 
-          //     item.status=='IN_PROCESS' || item.status=='ORDER_PLACED' || item.status=='DELIVERED'|| 
-          //     item.status=='PARTIALLY_DELIVERED' ) && 
+          
               <View key={item._id}>
                 <TouchableOpacity key={item._id} onPress={() => this.onPressCard(item._id,item.status)}>
                   <OrderStatusCard 
@@ -476,13 +474,10 @@ export default class OrderStatusScreen extends Component {
                   priority={item.priority} />
                   </TouchableOpacity>
               </View>
-               
-          // }
-
           )}  
-   
+  <View style={{height:120}}></View>
           </ScrollView>
-        </View>
+          </View>
       </Screen>
     );
   }

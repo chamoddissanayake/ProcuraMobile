@@ -19,7 +19,7 @@ export default {
   ORDER_PLACED_COLOR: "#b3adfc",
   //
   DELIVERED_COLOR: "#d233ff",
-  PARTIALLY_DELIVERED_COLOR: "#ff33c0",
+  PARTIALLY_DELIVERED_COLOR: "#f3c7ff",
   // 
   deleteBtnColor:"#f87070",
   modifyBtnColor:"#70acf8",

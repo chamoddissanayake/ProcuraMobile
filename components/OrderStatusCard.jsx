@@ -280,11 +280,11 @@ const styles = StyleSheet.create({
             alignItems: 'flex-start',
         },
         leftTitleTxt:{
-            fontSize:13,
+            fontSize:12,
 
         },
         rightTitleTxt:{
-            fontSize:13,            
+            fontSize:12,            
             fontWeight:"bold"
 
         },

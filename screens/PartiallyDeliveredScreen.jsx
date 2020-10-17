@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, View, Image, TextInput, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, View, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import NumericInput from 'react-native-numeric-input';
 import Screen from "../components/Screen";
 import AppText from "../common/AppText";
@@ -25,7 +25,8 @@ export default class PartiallyDeliveredScreen extends Component {
             visible:false,
             inputPrice:0,
             inputCount:0,
-            proof:""
+            proof:"",
+            loading:false
 
         };
       }
@@ -34,7 +35,7 @@ export default class PartiallyDeliveredScreen extends Component {
         this.setState({
             requisitionId: this.props.route.params.requisitionId, 
             status:this.props.route.params.status,
-            cardColor:colors.DELIVERED_COLOR
+            cardColor:colors.PARTIALLY_DELIVERED_COLOR
         }, () => {
         
                     //Provide requisition id and get order object - start
@@ -143,25 +144,7 @@ export default class PartiallyDeliveredScreen extends Component {
         }
 
 
-        // console.log(this.state.reqObj.quantity);
-        // console.log(this.state.reqObj.totalPrice);
-        console.log("-$-");
-
-        // if(this.state.reqObj.quantity == this.state.inputCount){
-        //     // delivery complete
-        //     this.setState({
-        //         fullDelivery:true,
-        //         visible:true
-        //     });
-            
-        // }else{
-        //     // partial delivery
-        //     this.setState({
-        //         fullDelivery:false,
-        //         visible:true
-        //     });
-        // }
-
+       
     };
 
     onChangeTextProof= (text) => {
@@ -192,56 +175,50 @@ export default class PartiallyDeliveredScreen extends Component {
 
 
     onPressDone= () => {
-        // Alert.alert("Order Placed"+ this.state.orderId);      
-        // this.props.navigation.navigate("ReceivedScreen",{orderId: this.state.orderId, reqId: this.state.reqId});
 
-        //reqId
-        //orderId
-        //full count in reqObj:{},
-        //fullDelivery:false,
-        // inputCount:0,
-        // proof:""
-
-        // console.log("---");
-        // console.log(this.state.requisitionId);
-        // console.log(this.state.orderObj._id);
-        // console.log(this.state.reqObj.quantity);
-        // console.log(this.state.fullDelivery);
-        var currentTot = this.state.inputCount + this.state.orderObj.receivedCount;
-        // console.log(this.state.currentTot);
-        // console.log(this.state.proof)
-        // console.log(this.state.reqObj.totalPrice);
-        // console.log("---");
-
-        var orderReceivedObj={
-            reqId:this.state.requisitionId,
-            orderId :this.state.orderObj._id,
-            quantity:this.state.reqObj.quantity,
-            fullDelivery: this.state.fullDelivery,
-            inputCount:currentTot,
-            proof :this.state.proof,
-            totalPrice:this.state.reqObj.totalPrice
+        if(this.state.proof == ""){
+            Alert.alert("Plese add a proof");
+        }else{
+            this.setState({loading:true}); 
+            // Alert.alert("Order Placed"+ this.state.orderId);      
+            // this.props.navigation.navigate("ReceivedScreen",{orderId: this.state.orderId, reqId: this.state.reqId});
+    
+            var currentTot = this.state.inputCount + this.state.orderObj.receivedCount;
+    
+            var orderReceivedObj={
+                reqId:this.state.requisitionId,
+                orderId :this.state.orderObj._id,
+                quantity:this.state.reqObj.quantity,
+                fullDelivery: this.state.fullDelivery,
+                inputCount:currentTot,
+                proof :this.state.proof,
+                totalPrice:this.state.reqObj.totalPrice
+            }
+    
+    
+    
+            axios.post(constants.ipAddress + "/order/received",orderReceivedObj)
+            .then(
+                function (response) {
+                    this.setState({loading:false}); 
+                    console.log("Received Response");
+                    console.log(response.data);
+                    Alert.alert("Order Received Modified");
+                    this.props.navigation.navigate("MainDashboardScreen");
+             
+    
+                }.bind(this)
+            ).catch(
+                function (error) {
+                
+                this.setState({loading:false}); 
+                console.log("error occurred -" + error);
+                this.setState({isLoading:false});
+                }.bind(this)
+            );
         }
 
-
-
-        axios.post(constants.ipAddress + "/order/received",orderReceivedObj)
-        .then(
-            function (response) {
-      
-                console.log("Received Response");
-                console.log(response.data);
-
-                this.props.navigation.navigate("MainDashboardScreen");
-         
-
-            }.bind(this)
-        ).catch(
-            function (error) {
-            console.log("error occurred -" + error);
-            this.setState({isLoading:false});
-            }.bind(this)
-        );
+        
       
 
     };
@@ -350,10 +327,12 @@ export default class PartiallyDeliveredScreen extends Component {
                                     </View>
                                     <View style={styles.rightSide}>
                                         <NumericInput style = {styles.inputPrice}
+                                            maxValue ={this.state.neededQuantity}
                                             underlineColorAndroid = "transparent"
                                             placeholderTextColor = "gray"
                                             onChange={value => this.handlePrice(value)}
                                             />
+                                            
                                     </View>
                                </View>
                                <View style={styles.singleRow}>
@@ -416,7 +395,16 @@ export default class PartiallyDeliveredScreen extends Component {
                                     >
                                         <Text style={styles.doneButtonText}>Done</Text>
                                     </TouchableOpacity>
+                                    
                                 </View>
+                                <View style={{alignItems:"center"}}>
+                                    {this.state.loading == true && 
+                                            <Image
+                                            source={require("../assets/loading/gear.gif")}
+                                            style={{width:40, height:40,paddingTop:30}}
+                                            />
+                                    }
+                                    </View>
                             </View>
                         </View>
                     </View>
@@ -557,7 +545,10 @@ textInputStyle:{
 
 BtnDoneContainer:{
     padding:10,
-    alignItems:"center"
+    alignItems:"center",
+    // flexDirection: 'row',
+    // justifyContent: 'center',
+    // alignItems: 'flex-start',
 },
 doneButtonContainer: {
    
