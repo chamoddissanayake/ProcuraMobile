@@ -156,7 +156,7 @@ export default class ViewPercentageScreen extends Component {
               </View>
               <View style={styles.usedRemainingSummaryRow}>
                 <View style={styles.summaryLeftSide}>
-                  <AppText style={styles.titleText}>Used</AppText>
+                  <AppText style={styles.titleText}>Remaining</AppText>
                 </View>
                 <View style={styles.summaryRightSide}>
                   <AppText style={styles.valueText}>
@@ -166,7 +166,7 @@ export default class ViewPercentageScreen extends Component {
               </View>
               <View style={styles.usedRemainingSummaryRow}>
                 <View style={styles.summaryLeftSide}>
-                  <AppText style={styles.titleText}>Remaining</AppText>
+                  <AppText style={styles.titleText}>Used</AppText>
                 </View>
                 <View style={styles.summaryRightSide}>
                   <AppText style={styles.valueText}>

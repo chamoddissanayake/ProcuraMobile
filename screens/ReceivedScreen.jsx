@@ -25,7 +25,8 @@ export default class ReceivedScreen extends Component {
             cardColor:"white",
             fullDelivery:false,
             visible:false,
-            proof:""
+            proof:"",
+            loading:false
         };
 
       }
@@ -198,55 +199,58 @@ export default class ReceivedScreen extends Component {
         // Alert.alert("Order Placed"+ this.state.orderId);      
         // this.props.navigation.navigate("ReceivedScreen",{orderId: this.state.orderId, reqId: this.state.reqId});
 
-        //reqId
-        //orderId
-        //full count in reqObj:{},
-        //fullDelivery:false,
-        // inputCount:0,
-        // proof:""
+if(this.state.proof ==""){
+    Alert.alert("Plese provide proof");
+}else{
+    this.setState({loading:true}); 
 
-        console.log("---");
-        console.log(this.state.reqId);
-        console.log(this.state.orderId);
-        console.log(this.state.reqObj.quantity);
-        console.log(this.state.fullDelivery);
-        console.log(this.state.inputCount);
-        console.log(this.state.proof)
-        console.log(this.state.reqObj.totalPrice);
-        console.log("---");
+    console.log("---");
+    console.log(this.state.reqId);
+    console.log(this.state.orderId);
+    console.log(this.state.reqObj.quantity);
+    console.log(this.state.fullDelivery);
+    console.log(this.state.inputCount);
+    console.log(this.state.proof)
+    console.log(this.state.reqObj.totalPrice);
+    console.log("---");
 
-        var orderReceivedObj={
-            reqId:this.state.reqId,
-            orderId :this.state.orderId,
-            quantity:this.state.reqObj.quantity,
-            fullDelivery: this.state.fullDelivery,
-            inputCount:this.state.inputCount,
-            proof :this.state.proof,
-            totalPrice:this.state.reqObj.totalPrice
-        }
+    var orderReceivedObj={
+        reqId:this.state.reqId,
+        orderId :this.state.orderId,
+        quantity:this.state.reqObj.quantity,
+        fullDelivery: this.state.fullDelivery,
+        inputCount:this.state.inputCount,
+        proof :this.state.proof,
+        totalPrice:this.state.reqObj.totalPrice
+    }
 
 
-        axios.post(constants.ipAddress + "/order/received",orderReceivedObj)
-        .then(
-            function (response) {
-      
-                console.log("Received Response");
-                console.log(response.data);
+    axios.post(constants.ipAddress + "/order/received",orderReceivedObj)
+    .then(
+        function (response) {
+            this.setState({loading:false}); 
+  
+            console.log("Received Response");
+            console.log(response.data);
 
-                this.props.navigation.navigate("MainDashboardScreen");
-            //   this.setState({
-            //     orderObj :response.data[0]
-            //   }, () => {
-    
-            //   });
+            this.props.navigation.navigate("MainDashboardScreen");
+        //   this.setState({
+        //     orderObj :response.data[0]
+        //   }, () => {
 
-            }.bind(this)
-        ).catch(
-            function (error) {
-            console.log("error occurred -" + error);
-            this.setState({isLoading:false});
-            }.bind(this)
-        );
+        //   });
+
+        }.bind(this)
+    ).catch(
+        function (error) {
+        this.setState({loading:false}); 
+        console.log("error occurred -" + error);
+        this.setState({isLoading:false});
+        }.bind(this)
+    );
+}
+
+
       
 
     };
@@ -287,7 +291,7 @@ export default class ReceivedScreen extends Component {
 
                     <View style={styles.row}>
                         <View style={styles.rowLeft}>
-                            <AppText style={styles.lText}>Quantity: </AppText>
+                            <AppText style={styles.lText}>Ordered Quantity: </AppText>
                         </View>
                         <View style={styles.rowRight}>
                             <AppText style={styles.rText}>{this.state.reqObj.quantity}</AppText>
@@ -332,6 +336,7 @@ export default class ReceivedScreen extends Component {
                                     </View>
                                     <View style={styles.rightSide}>
                                         <NumericInput style = {styles.inputQuantity}
+                                            maxValue={this.state.reqObj.quantity}
                                             underlineColorAndroid = "transparent"
                                             placeholderTextColor = "gray"
                                             // onChange={value => console.log(value)}
@@ -385,6 +390,14 @@ export default class ReceivedScreen extends Component {
                                     >
                                         <Text style={styles.doneButtonText}>Done</Text>
                                     </TouchableOpacity>
+                                        <View style={{paddingTop:10}}>    
+                                            {this.state.loading == true && 
+                                            <Image
+                                            source={require("../assets/loading/gearWhite.gif")}
+                                            style={{width:40, height:40,paddingTop:10}}
+                                            />
+                                            }
+                                        </View>
                                 </View>
                             </View>
                         </View>
@@ -492,7 +505,7 @@ const styles = StyleSheet.create({
 
       },
       rowLeft:{
-        width:100
+        width:170
       },
       rowRight:{
 
@@ -548,7 +561,10 @@ const styles = StyleSheet.create({
     // btnDone
     BtnDoneContainer:{
         padding:10,
-        alignItems:"center"
+        // alignItems:"center",
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
     },
     doneButtonContainer: {
        

@@ -25,6 +25,7 @@
     "react-native-awesome-alerts": "^1.4.2",
     "react-native-awesome-text-input": "^1.1.2",
     "react-native-gesture-handler": "~1.6.0",
+    "react-native-credit-card-input": "^0.4.1",
     "react-native-modal-datetime-picker": "^9.0.0",
     "react-native-numeric-input": "^1.8.3",
     "react-native-password-field": "^1.0.8",

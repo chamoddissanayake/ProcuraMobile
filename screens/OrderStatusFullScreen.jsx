@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Alert } from 'react-native'
+import { Text, StyleSheet, View, Alert, Image } from 'react-native'
 import { cos } from 'react-native-reanimated';
 import FullStatusCard from '../components/FullStatusCard';
 import Screen from "../components/Screen";
@@ -13,7 +13,8 @@ export default class OrderStatusFullScreen extends Component {
         this.state = {
             requisitionId:"",
             status:"",
-            reqObj:{}
+            reqObj:{},
+            loading:false
         };
      
     }
@@ -22,7 +23,8 @@ export default class OrderStatusFullScreen extends Component {
         // console.log(this.props.navigation)
         this.setState({ 
             requisitionId: this.props.route.params.requisitionId, 
-            status:this.props.route.params.status 
+            status:this.props.route.params.status,
+            loading:true 
         }, () => {
             //network call for fetching data  by requisition id- start
             // for
@@ -38,6 +40,8 @@ export default class OrderStatusFullScreen extends Component {
                             .then(
                               function (response) {
                               
+                                this.setState({loading:false});   
+
                                 console.log(response.data);
                                 this.setState({
                                     reqObj: response.data[0]
@@ -52,8 +56,9 @@ export default class OrderStatusFullScreen extends Component {
                             )
                             .catch(
                               function (error) {
+                                this.setState({});   
                                 console.log("error occurred -" + error);
-                                this.setState({isLoading:false});
+                                this.setState({loading:false});
                               }.bind(this)
                             );
                             
@@ -76,6 +81,15 @@ export default class OrderStatusFullScreen extends Component {
              IN_PROCESS
              APPROVED
              REJECTED */}
+
+               <View style={{alignItems:"center", paddingTop:10}}>        
+                    {this.state.loading == true && 
+                            <Image
+                            source={require("../assets/loading/gear.gif")}
+                            style={{width:80, height:80,paddingTop:30}}
+                            />
+                    }
+                </View>
 
             {(this.state.reqObj.status == 'APPROVAL_PENDING' || this.state.reqObj.status == 'IN_PROCESS' ||
              this.state.reqObj.status == 'APPROVED'||  this.state.reqObj.status == 'REJECTED' || this.state.reqObj.status == 'ORDER_PLACED'  ) &&

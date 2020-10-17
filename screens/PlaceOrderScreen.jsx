@@ -60,7 +60,8 @@ export default class PlaceOrderScreen extends Component {
       limitPrice:0,
       loaggedUser:"",
       // 
-      referenceID:""
+      referenceID:"",
+      loading:false
     };
 
     this.showDatePicker = this.showDatePicker.bind(this);
@@ -186,12 +187,15 @@ axios
 
   handlePlaceOrderBtnClick(){
 
+  
+
     console.log("!!!");
     console.log(this.state.itemCategory);
     console.log(this.state.total +">="+ this.state.limitPrice);
     console.log("!!!");  
 
     if(this.state.itemCategory == 'SPECIAL_APPROVAL' || this.state.total >= this.state.limitPrice){
+      this.setState({loading:true});  
       //Need approval
       axios
       .post(constants.ipAddress + "/requisition/register",{
@@ -211,8 +215,9 @@ axios
       .then(
         function (response) {
 
+
           this.setState({ 
-              referenceID:response.data.ops[0]._id
+              referenceID:response.data.ops[0]._id, loading:true
           }, () => {
              
             if(this.state.itemCategory == 'SPECIAL_APPROVAL' && this.state.total < this.state.limitPrice ){
@@ -239,12 +244,14 @@ axios
       )
       .catch(
         function (error) {
+          this.setState({loading:true});
           console.log("error occurred -" + error);
         }.bind(this)
       );
 
 
     }else{
+      this.setState({loading:true});  
       //No need of approval - place order
       console.log("inside else block");
 
@@ -267,7 +274,7 @@ axios
         function (response) {
 
           this.setState({ 
-            referenceID:response.data.ops[0]._id
+            referenceID:response.data.ops[0]._id,loading:false
         }, () => {
           this.props.navigation.navigate("RequestOrOrderScreen",{type:"ORDERED", refId:this.state.referenceID} );
         });
@@ -275,6 +282,7 @@ axios
       )
       .catch(
         function (error) {
+          this.setState({loading:false});  
           console.log("error occurred -" + error);
         }.bind(this)
       );
@@ -537,6 +545,14 @@ axios
             >
               <Text style={styles.appButtonText}>Place Order</Text>
             </TouchableOpacity>
+                <View style={{paddingTop:10}}>
+                  {this.state.loading == true && 
+                        <Image
+                        source={require("../assets/loading/gear.gif")}
+                        style={{width:40, height:40,paddingTop:10}}
+                        />
+                  }
+              </View>
           </View>
         </ScrollView>
       </Screen>
@@ -619,8 +635,14 @@ const styles = StyleSheet.create({
   supplierValueTxt: { fontSize: 18 },
 
   placeOrderBtnView: {
-    alignItems: "center",
+//    alignItems: "center",
     paddingBottom: 20,
+
+
+    flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'flex-start',
+    
   },
 
   constructionSiteContainer: {
